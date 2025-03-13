@@ -24,7 +24,6 @@ const moveTypeToSprite = {
 const AttackMenu = () => {
   const dispatch = useDispatch();
   const myTeam = useSelector((state) => state.battle.myTeam); // Access myTeam from Redux store
-  const movePP = useSelector((state) => state.battle.movePP); // Access PP from Redux store
 
   const selectedMove = useSelector((state) => state.battle.AttackMove);
   const [selected, setSelected] = useState(0); // Track selected move index (0 to 3)
@@ -78,11 +77,11 @@ const AttackMenu = () => {
     } else if (e.key === "ArrowLeft" && directionMap[selected].left !== null) {
       newSelected = directionMap[selected].left;
     } else if (e.key === "x") {
-      dispatch(setState("fight"));
       // Decrease PP for the selected move in myTeam[0]
       const updatedMovePP = myTeam[0].currentMoves[selected].pp - 1;
       dispatch(setmovePP({ moveIndex: selected, newPP: updatedMovePP }));
       dispatch(setAttackMove(myTeam[0].currentMoves[selected])); // Set the selected attack move
+      dispatch(setState("battle"));
     } else if (e.key === "z") {
       dispatch(setState("home"));
     }

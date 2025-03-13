@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setState } from "../../store/battleSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setState, setRound, setSwapped } from "../../store/battleSlice";
+import { setMessages } from "../../store/gameSlice";
 import Fight from "./SelectMenu/Fight";
 import Bag from "./SelectMenu/Bag";
 import Pokemon from "./SelectMenu/Pokemon";
@@ -8,6 +9,12 @@ import Run from "./SelectMenu/Run";
 
 const SelectMenu = () => {
   const dispatch = useDispatch();
+  const gameState = useSelector((state) => state.battle.state);
+  const swapped = useSelector((state) => state.battle.swapped);
+  const foeTeam = useSelector((state) => state.battle.foeTeam);
+
+  const keyHandlerG = useSelector((state) => state.game.keyHandler);
+  const round = useSelector((state) => state.battle.round);
 
   // Track selected option, each option is represented by a unique index
   const [selected, setSelected] = useState(2); // Index for selected item (0 to 3)
@@ -22,6 +29,9 @@ const SelectMenu = () => {
 
   // Handle key events
   const keyHandler = (e) => {
+    if (gameState !== "home" || keyHandlerG === "MessageKeyboardHandler") {
+      return;
+    }
     let newSelected = selected;
 
     if (e.key === "ArrowDown" && directionMap[selected].down !== null) {
@@ -48,7 +58,7 @@ const SelectMenu = () => {
   const handleSelect = (selectedOption) => {
     if (selectedOption === 0) {
       console.log("Pokemon selected");
-      dispatch(setState("pokemon"));
+      dispatch(setState("pokemonMenu"));
     } else if (selectedOption === 1) {
       console.log("Bag selected");
       dispatch(setState("bag"));
@@ -63,11 +73,21 @@ const SelectMenu = () => {
 
   // Listen for key press events
   useEffect(() => {
-    window.addEventListener("keydown", keyHandler);
+    if (gameState === "home") {
+      if (swapped) {
+        dispatch(setMessages(["New Pokemon " + foeTeam[0].name]));
+
+        dispatch(setSwapped(false));
+      }
+
+      dispatch(setRound("0"));
+
+      window.addEventListener("keydown", keyHandler);
+    }
     return () => {
       window.removeEventListener("keydown", keyHandler);
     };
-  }, [selected]);
+  }, [selected, keyHandlerG, gameState, swapped]);
 
   return (
     <div

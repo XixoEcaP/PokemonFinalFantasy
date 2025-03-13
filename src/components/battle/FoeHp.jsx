@@ -1,18 +1,41 @@
 import React from "react";
-import foeHpSrc from "../../assets/foedatabox.png"; // Make sure the image path is correct
+import myHpSrc from "../../assets/foedatabox.png";
+import HpBar from "./HpBar";
 
-const FoeHp = () => {
+const FoeHp = ({ pokemon }) => {
   return (
     <div
       style={{
         width: "260px",
         height: "62px",
-        background: `url(${foeHpSrc}) no-repeat center/contain`,
+        background: `url(${myHpSrc}) no-repeat center/contain`,
         position: "absolute",
-        bottom: 0,
-        right: 0, // Position it in the bottom-left corner
+        top: "0px",
+        left: "0px",
       }}
-    />
+    >
+      <div
+        style={{
+          position: "relative",
+          left: "80px", // ✅ Adjust freely as you want
+          top: "10px", // ✅ Adjust freely as you want
+          color: "white",
+          fontSize: "18px",
+        }}
+      >
+        {pokemon.stats.hp}/{pokemon.hp} {pokemon.name} Lv.{pokemon.level}
+      </div>
+
+      <div
+        style={{
+          position: "relative",
+          left: "118px", // ✅ Adjust freely as you want
+          top: "15px", // ✅ Adjust freely as you want
+        }}
+      >
+        <HpBar hp={pokemon.hp} maxHp={pokemon.stats.hp} />
+      </div>
+    </div>
   );
 };
 

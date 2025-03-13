@@ -9,8 +9,13 @@ const pokemons = {
     defense: 50,
     specialAttack: 60,
     specialDefense: 59,
-    speed: 62,
-    moves: [moves.attackMove, moves.waterMove, moves.firaMove],
+    speed: 2,
+    moves: [
+      moves.attackMove,
+      moves.waterMove,
+      moves.firaMove,
+      moves.thundaraMove,
+    ],
     sprites: {
       front: require("../assets/pokemons/levia.png"),
       back: require("../assets/pokemons/leviaback.png"),
@@ -18,7 +23,7 @@ const pokemons = {
     Evolutions: ["Leviata", 10], // Evolves into Leviata at level 10
   },
   Leviata: {
-    name: "Leviata",
+    specie: "Leviata",
     type: ["Water", "Flying"],
     hp: 59,
     attack: 64,
@@ -39,7 +44,7 @@ const pokemons = {
     Evolutions: ["Leviathan", 15],
   },
   Leviathan: {
-    name: "Leviathan",
+    specie: "Leviathan",
     type: ["Water", "Flying"],
     hp: 80,
     attack: 85,
@@ -75,7 +80,7 @@ const pokemons = {
     Evolutions: ["Indra", 10], // Evolves into Indra at level 10
   },
   Indra: {
-    name: "Indra",
+    specie: "Indra",
     type: ["Thunder", "Psychic"],
     hp: 58,
     attack: 60,
@@ -96,7 +101,7 @@ const pokemons = {
     Evolutions: ["Ramuh", 15],
   },
   Ramuh: {
-    name: "Ramuh",
+    specie: "Ramuh",
     type: ["Thunder", "Psychic"],
     hp: 80,
     attack: 75,
@@ -132,7 +137,7 @@ const pokemons = {
     Evolutions: ["Iflyte", 10], // Evolves into Iflyte at level 10
   },
   Iflyte: {
-    name: "Iflyte",
+    specie: "Iflyte",
     type: ["Fire", "Ground"],
     hp: 60,
     attack: 80,
@@ -148,7 +153,7 @@ const pokemons = {
     Evolutions: ["Ifrit", 15],
   },
   Ifrit: {
-    name: "Ifrit",
+    specie: "Ifrit",
     type: ["Fire", "Ground"],
     hp: 80,
     attack: 105,
@@ -168,7 +173,7 @@ const pokemons = {
     },
   },
   Snatch: {
-    name: "Snatch",
+    specie: "Snatch",
     type: ["Normal"],
     hp: 30,
     attack: 56,
@@ -184,7 +189,7 @@ const pokemons = {
     Evolutions: ["Bandersnatch", 10],
   },
   Bandersnatch: {
-    name: "Bandersnatch",
+    specie: "Bandersnatch",
     type: ["Normal"],
     hp: 65,
     attack: 85,
@@ -199,7 +204,7 @@ const pokemons = {
     },
   },
   Coeurl: {
-    name: "Coeurl",
+    specie: "Coeurl",
     type: ["Thunder"],
     hp: 35,
     attack: 52,
@@ -215,7 +220,7 @@ const pokemons = {
     Evolutions: ["Coeurlregina", 10],
   },
   Coeurlregina: {
-    name: "Coeurlregina",
+    specie: "Coeurlregina",
     type: ["Thunder"],
     hp: 65,
     attack: 70,
@@ -235,7 +240,7 @@ const pokemons = {
     },
   },
   Bomb: {
-    name: "Bomb",
+    specie: "Bomb",
     type: ["Fire", "Rock"],
     hp: 40,
     attack: 55,
@@ -250,7 +255,7 @@ const pokemons = {
     },
   },
   Goblin: {
-    name: "Goblin",
+    specie: "Goblin",
     type: ["Normal"],
     hp: 30,
     attack: 60,
@@ -266,7 +271,7 @@ const pokemons = {
     Evolutions: ["Hobgoblin", 10],
   },
   Hobgoblin: {
-    name: "Hobgoblin",
+    specie: "Hobgoblin",
     type: ["Normal", "Fighting"],
     hp: 75,
     attack: 95,
@@ -281,7 +286,7 @@ const pokemons = {
     },
   },
   Morbol: {
-    name: "Morbol",
+    specie: "Morbol",
     type: ["Poison"],
     hp: 35,
     attack: 75,
@@ -297,7 +302,7 @@ const pokemons = {
     Evolutions: ["Leviathan", 10],
   },
   Malboro: {
-    name: "Malboro",
+    specie: "Malboro",
     type: ["Poison"],
     hp: 65,
     attack: 90,
@@ -313,7 +318,7 @@ const pokemons = {
     Evolutions: ["G. Malboro", 15],
   },
   GMalboro: {
-    name: "G. Malboro",
+    specie: "G. Malboro",
     type: ["Poison"],
     hp: 80,
     attack: 105,
@@ -333,7 +338,7 @@ const pokemons = {
     },
   },
   Hecteyes: {
-    name: "Hecteyes",
+    specie: "Hecteyes",
     type: ["Poison", "Dark"],
     hp: 50,
     attack: 70,
@@ -353,7 +358,7 @@ const pokemons = {
     },
   },
   Flan: {
-    name: "Flan",
+    specie: "Flan",
     type: ["Poison", "Psychic"],
     hp: 40,
     attack: 25,
@@ -369,7 +374,7 @@ const pokemons = {
     Evolutions: ["Giant Flan", 10],
   },
   GiantFlan: {
-    name: "Giant Flan",
+    specie: "Giant Flan",
     type: ["Poison", "Psychic"],
     hp: 80,
     attack: 50,
@@ -389,7 +394,7 @@ const pokemons = {
     },
   },
   OneEye: {
-    name: "One Eye",
+    specie: "One Eye",
     type: ["Dark", "Flying"],
     hp: 45,
     attack: 68,
@@ -405,7 +410,7 @@ const pokemons = {
     Evolutions: ["Ahriman", 10],
   },
   Ahriman: {
-    name: "Ahriman",
+    specie: "Ahriman",
     type: ["Dark", "Flying"],
     hp: 65,
     attack: 105,
@@ -425,7 +430,7 @@ const pokemons = {
     },
   },
   Hemoth: {
-    name: "Hemoth",
+    specie: "Hemoth",
     type: ["Ground"],
     hp: 45,
     attack: 54,
@@ -442,7 +447,7 @@ const pokemons = {
   },
 
   Humbaba: {
-    name: "Humbaba",
+    specie: "Humbaba",
     type: ["Ground"],
     hp: 60,
     attack: 80,
@@ -464,7 +469,7 @@ const pokemons = {
   },
 
   Behemoth: {
-    name: "Behemoth",
+    specie: "Behemoth",
     type: ["Ground", "Dark"],
     hp: 80,
     attack: 105,

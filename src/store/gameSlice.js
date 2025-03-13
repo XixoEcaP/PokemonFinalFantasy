@@ -5,6 +5,7 @@ import useCreatePokemon from "../hooks/useCreatePokemon";
 import { v4 as uuidv4 } from "uuid"; // To generate unique IDs for Pokémon
 
 const initialState = {
+  battle: false,
   npcIsWalking: false,
   walkingSteps: 3,
   walkingDirection: 0,
@@ -35,7 +36,7 @@ const initialState = {
     faster: false,
   },
   ovmap: {
-    ovmap: "overworld1",
+    ovmap: "overworldmap1",
     width: 32,
     height: 96,
     tileSize: 32,
@@ -51,6 +52,9 @@ const gameSlice = createSlice({
   reducers: {
     setItems: (state, action) => {
       state.items = action.payload; // ✅ Toggle pause state
+    },
+    setBattle: (state, action) => {
+      state.battle = action.payload; // ✅ Toggle pause state
     },
     setPause: (state, action) => {
       state.isPaused = action.payload; // ✅ Toggle pause state
@@ -110,6 +114,9 @@ const gameSlice = createSlice({
     },
     setPlayerWalking: (state, action) => {
       state.player.isWalking = action.payload;
+    },
+    setWalkingSteps: (state, action) => {
+      state.player.walkingSteps = action.payload;
     },
     setmap: (state, action) => {
       state.map = action.payload;
@@ -268,6 +275,8 @@ export const {
   addPokemon,
   updatePokemon,
   setWalkingDirection,
+  setBattle,
+  setWalkingSteps,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

@@ -16,7 +16,8 @@ export const Cloud = {
   tileY: 6,
   ovmap: "cidLab",
   sprite: CloudSprite,
-  direction: 1,
+  direction: 0,
+  walks: true,
 };
 export const Auron = {
   character: "Auron",

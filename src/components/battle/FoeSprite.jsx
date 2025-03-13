@@ -1,16 +1,20 @@
 import React from "react";
-import foeSprite from "../../assets/pokemons/ahriman.png"; // Make sure the image path is correct
 
-const FoeSprite = () => {
+const FoeSprite = ({ sprite, position }) => {
+  if (!sprite) {
+    console.error("Sprite not available for FoeSprite"); // Log error if sprite is missing
+    return null; // Fallback if sprite data is not available
+  }
+
   return (
     <div
       style={{
         width: "160px",
         height: "160px",
-        background: `url(${foeSprite}) no-repeat center/contain`,
+        background: `url(${sprite}) no-repeat center/contain`,
         position: "absolute",
-        top: 0,
-        right: 0, // Position it in the bottom-left corner
+        top: "0",
+        right: `${position}px`, // Dynamic position update
       }}
     />
   );

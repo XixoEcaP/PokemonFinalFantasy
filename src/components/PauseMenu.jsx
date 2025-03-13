@@ -31,6 +31,11 @@ export const PauseMenu = ({
     if (!isPaused) return;
 
     if (!showPokemonMenu && !showBagMenu) {
+      if (e.key === " " || e.key === "z") {
+        dispatch(setPause(false)); // ✅ Close menu
+        dispatch(setMessages([""])); // ✅ Close menu
+        dispatch(setKeyHandler("WorldKeyboardHandler")); // ✅ Close menu
+      }
       if (e.key === "ArrowUp") {
         setSelectedOption(
           (prev) => (prev - 1 + menuOptions.length) % menuOptions.length

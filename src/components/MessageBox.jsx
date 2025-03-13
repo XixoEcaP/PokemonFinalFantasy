@@ -12,8 +12,8 @@ const MessageBox = () => {
       <div
         style={{
           position: "absolute",
-          bottom: "0px", // ✅ Sticks to bottom
-          left: "0px",
+          bottom: "-1px", // ✅ Sticks to bottom
+          left: "1px",
           width: "512px", // ✅ Keeps original PNG width
           height: "96px", // ✅ Keeps original PNG height
           background: `url(${battleBoxSrc}) no-repeat center/contain`,
