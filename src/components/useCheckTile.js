@@ -18,6 +18,7 @@ import {
   setOvmapTiles,
   updatePokemon,
   setWalkingDirection,
+  setBattle,
 } from "../store/gameSlice";
 import {
   CidLabTiles,
@@ -29,6 +30,7 @@ import { leviaball, ramball, ifuritoball, pokeball1 } from "../data/items";
 import pokemons from "../data/pokemonData";
 import useCreatePokemon from "../hooks/useCreatePokemon";
 import useLevelUp from "../hooks/useLevelUp";
+import { setFoeTeam, setMyTeam } from "../store/battleSlice";
 
 export default function useCheckTile() {
   const dispatch = useDispatch();
@@ -43,6 +45,9 @@ export default function useCheckTile() {
   const { createPokemon } = useCreatePokemon();
   const { levelUp } = useLevelUp();
   const pokemonTeam = useSelector((state) => state.game.pokemonTeam);
+  const talkingNpc = useSelector((state) => state.game.talkingNpc);
+  const battle = useSelector((state) => state.game.battle);
+
   const messages = useSelector((state) => state.game.messages);
 
   const booleanChoice = useSelector((state) => state.game.booleanChoice);
@@ -207,34 +212,57 @@ export default function useCheckTile() {
   // ✅ Listen for Boolean Choice & Trigger Events
   // In the useEffect hook
   useEffect(() => {
-    if (
-      message === "" &&
-      events.leviaball &&
-      NextX === leviaball.tileX &&
-      NextY === leviaball.tileY &&
-      npcIsWalking
-    ) {
-      dispatch(setEvent("ramball"));
-      dispatch(setOvmapTiles(CidLabTiles));
-      dispatch(setNpcIsWalking(false));
-    }
+    if (map === "cidlab" && !battle) {
+      if (
+        message === "" &&
+        events.leviaball &&
+        NextX === leviaball.tileX &&
+        NextY === leviaball.tileY &&
+        talkingNpc === "Cloud"
+      ) {
+        dispatch(setMyTeam(pokemonTeam));
+        const ram1 = createPokemon(pokemons.Ram, 5);
+        dispatch(setFoeTeam([ram1]));
 
-    if (map === "cidlab") {
+        dispatch(setNpcIsWalking(false));
+        dispatch(
+          setMessages([
+            "Hey",
+            "I'm chosing My Pokemon",
+            "Lets Battle",
+            "Battle",
+          ])
+        );
+      }
+      if (message === "Hey") {
+        dispatch(setNpcIsWalking(true));
+      }
+      if (message === "I'm chosing My Pokemon") {
+        dispatch(setWalkingDirection(1));
+        dispatch(setNpcIsWalking(false));
+      }
+      if (message === "Lets Battle") {
+        dispatch(setEvent("ramball"));
+      }
+      if (message === "Battle") {
+        dispatch(setOvmapTiles(CidLabTiles));
+        dispatch(setMessages(["Battling Cloud"]));
+        dispatch(setBattle(true));
+        dispatch(setTalkingNpc(""));
+      }
+
       if (booleanChoice === true) {
         if (NextX === Cid.tileX && NextY === Cid.tileY) {
           dispatch(setMessages(["HOLA"]));
         }
 
         if (NextX === leviaball.tileX && NextY === leviaball.tileY) {
-          dispatch(setEvent("leviaball"));
           const newLevia = createPokemon(pokemons.Levia, 5);
           dispatch(addPokemon(newLevia));
           dispatch(setMessages(["You chose levia"]));
+
+          dispatch(setEvent("leviaball"));
           dispatch(setTalkingNpc("Cloud"));
-          dispatch(setNpcIsWalking(true));
-          dispatch(setOvmapTiles(CidLabTiles));
-          dispatch(setMessages(["Hey", "I'm chosing My Pokemon"]));
-          dispatch(setWalkingDirection(0));
         }
         if (tileX === ramball.tileX && NextY === ramball.tileY) {
           dispatch(setEvent("ramball"));
@@ -254,7 +282,17 @@ export default function useCheckTile() {
         dispatch(setBooleanChoice(null));
       }
     }
-  }, [tileX, tileY, map, booleanChoice, dispatch, message]);
+  }, [
+    tileX,
+    tileY,
+    map,
+    booleanChoice,
+    dispatch,
+    message,
+    talkingNpc,
+    battle,
+    pokemonTeam,
+  ]);
 
   return checkTile;
 }

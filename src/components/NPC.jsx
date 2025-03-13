@@ -25,7 +25,7 @@ export default function NPC({ npc }) {
   const playerX = useSelector((state) => state.game.player.tileX); // Player position
   const playerY = useSelector((state) => state.game.player.tileY); // Player position
 
-  const steps = useRef(3); // Set the number of steps
+  const steps = useRef(walkingSteps); // Set the number of steps
   const stepCount = useRef(0); // Track the current step count using useRef
 
   const [animFrame, setAnimFrame] = useState(0);
@@ -44,7 +44,7 @@ export default function NPC({ npc }) {
 
   // Update NPC direction when talking to the player
   useEffect(() => {
-    if (isTalking) {
+    if (isTalking && !npcIsWalking) {
       const dx = playerX - npc.tileX;
       const dy = playerY - npc.tileY;
 
@@ -56,7 +56,7 @@ export default function NPC({ npc }) {
     } else {
       setNpcDirection(npc.direction); // Reset to default direction
     }
-  }, [isTalking, playerX, playerY]);
+  }, [isTalking, playerX, playerY, npcIsWalking]);
 
   // Handle NPC movement when it's walking and count steps
   useEffect(() => {
@@ -83,8 +83,10 @@ export default function NPC({ npc }) {
       return () => {
         clearInterval(interval);
       };
+    } else if (talkingNpc === npc.character && npc.walks) {
+      setNpcDirection(walkingDirection);
     }
-  }, [npcIsWalking, talkingNpc, walkingDirection, npcDirection]);
+  }, [npcIsWalking, talkingNpc, walkingDirection, npcDirection, isTalking]);
 
   useGetTile(npc, npcPosition);
 

@@ -16,16 +16,17 @@ const Move4 = ({ isSelected, move, sprite }) => {
         alignItems: "center",
         justifyContent: "flex-start",
         color: "white",
-        fontSize: "14px",
+        fontSize: "16px",
         textAlign: "left",
         lineHeight: "1.5",
-        fontFamily: '"Public Pixel", sans-serif',
+        //fontFamily: '"Public Pixel", sans-serif',
+        fontFamily: isSelected
+          ? '"Pokemon Solid", sans-serif'
+          : '"Pokemon Hollow", sans-serif',
       }}
     >
       {/* Conditionally add => before the move name if selected */}
-      <span style={{ marginLeft: "20px" }}>
-        {isSelected ? "=> " : ""} {move.name}
-      </span>
+      <span style={{ marginLeft: "20px" }}>{move.name}</span>
     </div>
   );
 };

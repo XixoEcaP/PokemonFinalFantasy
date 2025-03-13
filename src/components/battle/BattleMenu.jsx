@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import battleBoxSrc from "../../assets/messagebox.png";
 import SelectMenu from "./SelectMenu";
 import AttackMenu from "./AttackMenu";
+import PokemonBattleMenu from "./PokemonBattleMenu";
 
 const BattleMenu = () => {
   const gameState = useSelector((state) => state.battle.state); // Get state from the store
@@ -12,8 +13,13 @@ const BattleMenu = () => {
   useEffect(() => {
     if (gameState === "fight") {
       setCurrentMenu("fight");
-    } else {
+    }
+    if (gameState === "home") {
       setCurrentMenu("home");
+    }
+
+    if (gameState === "battle") {
+      setCurrentMenu("battle");
     }
   }, [gameState]); // Runs whenever gameState changes
 

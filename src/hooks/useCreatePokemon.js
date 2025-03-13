@@ -22,13 +22,14 @@ const useCreatePokemon = () => {
 
     // Ensure that all properties are passed correctly from the species object
     return {
-      name: name || pokemon.name, // Name is either provided or defaults to species name
+      name: name || pokemon.specie, // Name is either provided or defaults to species name
       specie: pokemon.specie, // Species is always set to the species object
       type: pokemon.type, // Add types
       sprites: pokemon.sprites, // Add sprites
       evolutions: pokemon.Evolutions, // Add evolutions
       currentMoves: [...pokemon.moves], // Moves array, repeat if necessary
       exp: 0, // Initial experience set to 0
+      hp: hp,
       stats: {
         hp,
         attack,

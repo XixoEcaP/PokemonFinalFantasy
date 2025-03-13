@@ -1,19 +1,23 @@
 import React from "react";
-import mySprite from "../../assets/pokemons/bombback.png"; // Make sure the image path is correct
 
-const FoeHp = () => {
+const MySprite = ({ sprite, position }) => {
+  if (!sprite) {
+    console.error("Sprite not available for MySprite"); // Log error if sprite is missing
+    return null; // Fallback if sprite data is not available
+  }
+
   return (
     <div
       style={{
         width: "160px",
         height: "160px",
-        background: `url(${mySprite}) no-repeat center/contain`,
+        background: `url(${sprite}) no-repeat center/contain`,
         position: "absolute",
-        bottom: 0,
-        left: 0, // Position it in the bottom-left corner
+        bottom: "0",
+        left: `${position}px`, // Dynamic position update
       }}
     />
   );
 };
 
-export default FoeHp;
+export default MySprite;
