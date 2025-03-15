@@ -5,13 +5,14 @@ import useCreatePokemon from "../hooks/useCreatePokemon";
 import { v4 as uuidv4 } from "uuid"; // To generate unique IDs for Pokémon
 
 const initialState = {
+  gameOver: false,
   battle: false,
   npcIsWalking: false,
-  walkingSteps: 3,
+  walkingSteps: 1,
   walkingDirection: 0,
   items: ["Potion", "Pokeball"],
   isPaused: false,
-  talkingNpc: null,
+  talkingNpc: "",
   starter: "",
   showBooleanBox: false,
   booleanBox: false, // Whether the boolean prompt is visible
@@ -22,6 +23,10 @@ const initialState = {
   currentMessageIndex: 0,
   otherPkemons: [],
   pokemonTeam: [],
+  next: {
+    nextY: 0,
+    nextX: 0,
+  },
   events: {
     leviaball: false,
     ramball: false,
@@ -52,6 +57,11 @@ const gameSlice = createSlice({
   reducers: {
     setItems: (state, action) => {
       state.items = action.payload; // ✅ Toggle pause state
+    },
+    setNext: (state, action) => {
+      const { nextX, nextY } = action.payload;
+      state.next.nextX = tileX;
+      state.next.nextY = tileY;
     },
     setBattle: (state, action) => {
       state.battle = action.payload; // ✅ Toggle pause state
@@ -110,13 +120,15 @@ const gameSlice = createSlice({
       );
     },
     setPlayerDirection: (state, action) => {
-      state.player.direction = action.payload;
+      if (state.battle === false) {
+        state.player.direction = action.payload;
+      }
     },
     setPlayerWalking: (state, action) => {
       state.player.isWalking = action.payload;
     },
     setWalkingSteps: (state, action) => {
-      state.player.walkingSteps = action.payload;
+      state.walkingSteps = action.payload;
     },
     setmap: (state, action) => {
       state.map = action.payload;
@@ -136,30 +148,38 @@ const gameSlice = createSlice({
     setShowBooleanBox: (state, action) => {
       state.showBooleanBox = action.payload;
     },
+    setGameOver: (state, action) => {
+      state.gameOver = action.payload;
+    },
+
     setPlayerTile: (state, action) => {
-      const { tileX, tileY } = action.payload;
-      if (
-        tileX >= 0 &&
-        tileX < state.ovmap.width &&
-        tileY >= 0 &&
-        tileY < state.ovmap.height
-      ) {
-        state.player.tileX = tileX;
-        state.player.tileY = tileY;
+      if (state.battle === false) {
+        const { tileX, tileY } = action.payload;
+        if (
+          tileX >= 0 &&
+          tileX < state.ovmap.width &&
+          tileY >= 0 &&
+          tileY < state.ovmap.height
+        ) {
+          state.player.tileX = tileX;
+          state.player.tileY = tileY;
+        }
       }
     },
     movePlayer: (state, action) => {
-      const { dx, dy } = action.payload;
-      const newX = state.player.tileX + dx;
-      const newY = state.player.tileY + dy;
-      if (
-        newX >= 0 &&
-        newX < state.ovmap.width &&
-        newY >= 0 &&
-        newY < state.ovmap.height
-      ) {
-        state.player.tileX = newX;
-        state.player.tileY = newY;
+      if (state.battle === false) {
+        const { dx, dy } = action.payload;
+        const newX = state.player.tileX + dx;
+        const newY = state.player.tileY + dy;
+        if (
+          newX >= 0 &&
+          newX < state.ovmap.width &&
+          newY >= 0 &&
+          newY < state.ovmap.height
+        ) {
+          state.player.tileX = newX;
+          state.player.tileY = newY;
+        }
       }
     },
     setFaster: (state, action) => {
@@ -277,6 +297,7 @@ export const {
   setWalkingDirection,
   setBattle,
   setWalkingSteps,
+  setGameOver,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
