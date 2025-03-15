@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/PokemonFinalFantasy/static/css/main.880ec004.css",
-    "main.js": "/PokemonFinalFantasy/static/js/main.3ed56d82.js",
+    "main.js": "/PokemonFinalFantasy/static/js/main.73d71f15.js",
     "static/media/overworld1.png": "/PokemonFinalFantasy/static/media/overworld1.e5b31d8b48c17ebb2449.png",
     "static/media/battlebg.png": "/PokemonFinalFantasy/static/media/battlebg.075fd8fc5541c45a1f21.png",
     "static/media/cidlab.png": "/PokemonFinalFantasy/static/media/cidlab.c62c86ddd9a87aad9ef8.png",
@@ -12,10 +12,10 @@
     "static/media/behemothback.png": "/PokemonFinalFantasy/static/media/behemothback.620e61cf3bd3b934071b.png",
     "index.html": "/PokemonFinalFantasy/index.html",
     "main.880ec004.css.map": "/PokemonFinalFantasy/static/css/main.880ec004.css.map",
-    "main.3ed56d82.js.map": "/PokemonFinalFantasy/static/js/main.3ed56d82.js.map"
+    "main.73d71f15.js.map": "/PokemonFinalFantasy/static/js/main.73d71f15.js.map"
   },
   "entrypoints": [
     "static/css/main.880ec004.css",
-    "static/js/main.3ed56d82.js"
+    "static/js/main.73d71f15.js"
   ]
 }
