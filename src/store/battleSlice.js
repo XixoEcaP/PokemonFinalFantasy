@@ -4,15 +4,15 @@ import useCreatePokemon from "../hooks/useCreatePokemon";
 const { createPokemon } = useCreatePokemon();
 
 const pokemonList = [
-  createPokemon(pokemons.Levia, 5),
-  createPokemon(pokemons.Ifurito, 5),
-  createPokemon(pokemons.Ram, 5),
+  createPokemon(pokemons.Ifrit, 5),
+  createPokemon(pokemons.Ahriman, 5),
+  createPokemon(pokemons.Hobgoblin, 5),
   createPokemon(pokemons.Ifurito, 5),
   createPokemon(pokemons.Ahriman, 5),
   createPokemon(pokemons.Bomb, 5),
   createPokemon(pokemons.Leviathan, 5),
-  createPokemon(pokemons.Behemoth, 1),
-  createPokemon(pokemons.Ramuh, 10),
+  createPokemon(pokemons.Behemoth, 5),
+  createPokemon(pokemons.Ramuh, 5),
 ];
 
 const initialState = {

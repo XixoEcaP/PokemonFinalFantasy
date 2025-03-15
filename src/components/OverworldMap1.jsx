@@ -10,13 +10,15 @@ import NPC from "./NPC";
 import useNPCManager from "../hooks/useNPCManager";
 import PauseMenu from "./PauseMenu";
 import { setItems, setPokemonTeam } from "../store/gameSlice";
+import useOVMap1TileManager from "../hooks/useOVMap1TileManager";
 
 const TILE_SIZE = 32;
 const VIEWPORT_WIDTH = 512;
 const VIEWPORT_HEIGHT = 384;
 
 function OverworldMap1() {
-  useTileManager(); // ✅ Handles map updates dynamically
+  useTileManager();
+  useOVMap1TileManager();
   const dispatch = useDispatch();
 
   const { width, height } = useSelector((state) => state.game.ovmap);

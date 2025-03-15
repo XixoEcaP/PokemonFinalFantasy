@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { OverworldMap1Tiles2 } from "../data/mapChunks";
 import {
@@ -9,33 +9,26 @@ import {
   setPlayerDirection,
   setMessages,
   setOvmapTiles,
+  setGameOver,
+  setBattle,
 } from "../store/gameSlice";
-import { ifuritoball } from "../data/items";
+import { setFoeTeam } from "../store/battleSlice";
+import useGetFoePokemon from "../hooks/useGetFoePokemon";
 
 export default function useTileManager() {
   const dispatch = useDispatch();
   const { tileX, tileY } = useSelector((state) => state.game.player);
   const currentMap = useSelector((state) => state.game.map);
   const currentTileSet = useSelector((state) => state.game.currentTileSet);
-  const tiles = useSelector((state) => state.game.ovmap.tiles); // ✅ Get tiles from Redux state
+  const tiles = useSelector((state) => state.game.ovmap.tiles);
   const overworld = useSelector((state) => state.game.ovmap.ovmap);
-  const events = useSelector((state) => state.game.events);
+  const gameOver = useSelector((state) => state.game.gameOver);
+  const message = useSelector((state) => state.game.message);
+  const battle = useSelector((state) => state.game.battle);
+  const [newMap, setNewMap] = useState(currentMap);
+  const getFoePokemon = useGetFoePokemon();
 
   useEffect(() => {
-    let newMap = currentMap; // Start with current map to prevent `undefined`
-
-    if (overworld === "overworld1") {
-      // ✅ Fixed typo
-      if (tileY >= 0 && tileY <= 22) {
-        newMap = "map1";
-      } else if (tileY >= 23 && tileY <= 71) {
-        newMap = "map2";
-      } else if (tileY >= 72 && tileY <= 96) {
-        newMap = "map3";
-      }
-    }
-
-    // ✅ Ensure tiles exist before accessing them
     if (
       tiles &&
       tileY >= 0 &&
@@ -44,26 +37,41 @@ export default function useTileManager() {
       tileX < tiles[0].length
     ) {
       const newTileSet = tiles[tileY][tileX];
-
-      // ✅ Define non-walkable tiles (0 or any other value)
       const isWalkable = newTileSet >= 1;
-
-      // ✅ Set `currentTileSet` to 0 if unwalkable, otherwise set actual tile value
       const updatedTileSet = isWalkable ? newTileSet : 0;
-
       if (updatedTileSet !== currentTileSet) {
         dispatch(setCurrentTileSet(updatedTileSet));
       }
+
+      // ✅ Battle logic (Only calls function inside useEffect)
+      const random = Math.floor(Math.random() * 100);
+
+      if (updatedTileSet === 2 && !battle && random > 95) {
+        const foePokemon = getFoePokemon(); // Now this function is stable and won't cause re-renders
+        if (foePokemon) {
+          dispatch(setMessages([foePokemon.name + " has appear"]));
+          dispatch(setFoeTeam([foePokemon]));
+          dispatch(setBattle(true));
+        }
+      }
     } else {
-      // ✅ Out of bounds: Consider it non-walkable
       if (currentTileSet !== 0) {
         dispatch(setCurrentTileSet(0));
       }
     }
-
-    // ✅ Only dispatch `setmap` if newMap is different
-    if (newMap && newMap !== currentMap) {
-      dispatch(setmap(newMap));
+    if (gameOver && message === "") {
+      dispatch(
+        setOvmap({
+          ovmap: "overworldmap1",
+          width: 32,
+          height: 96,
+          tileSize: 32,
+          tiles: OverworldMap1Tiles2,
+        })
+      );
+      dispatch(setPlayerTile({ tileX: 18, tileY: 80 }));
+      dispatch(setPlayerDirection(0));
+      dispatch(setGameOver(false));
     }
   }, [
     dispatch,
@@ -73,7 +81,8 @@ export default function useTileManager() {
     currentTileSet,
     tiles,
     overworld,
-    setPlayerTile,
-    setMessages,
+    gameOver,
+    message,
+    getFoePokemon, // ✅ Now stable due to useCallback
   ]);
 }

@@ -11,7 +11,12 @@ import {
   setDemage,
   swapFoePokemon,
 } from "../../store/battleSlice";
-import { setBattle, setMessages } from "../../store/gameSlice";
+import {
+  setBattle,
+  setGameOver,
+  setMessages,
+  setPokemonTeam,
+} from "../../store/gameSlice";
 import useCalculateDamage from "../../hooks/useCalculateDamage";
 import PokemonBattleMenu from "./PokemonBattleMenu";
 
@@ -42,13 +47,15 @@ const BattleView = () => {
 
     if (gameState === "home") return;
     if (myTeamDefeated && message === "") {
-      dispatch(setMessages(["You Lost"]));
+      dispatch(setMessages(["You Lost", "Gameover"]));
       dispatch(setBattle(false));
+      dispatch(setGameOver(true));
     }
     if (foeTeamDefeated && message === "") {
       dispatch(setMessages(["You Won!"]));
 
       dispatch(setBattle(false));
+      dispatch(setPokemonTeam(myTeam));
     }
 
     if (myTeam[0].hp <= 0 && message === "") {
@@ -214,7 +221,7 @@ const BattleView = () => {
         setMySpritePosition((prevPos) => prevPos - moveAmount);
         setIsMoving(false);
         dispatch(setState("battle"));
-      }, 300);
+      }, 200);
     }
 
     if (gameState === "foeAttack") {
@@ -223,7 +230,7 @@ const BattleView = () => {
         setFoeSpritePosition((prevPos) => prevPos - moveAmount);
         setIsMoving(false);
         dispatch(setState("battle"));
-      }, 300);
+      }, 150);
     }
   };
 

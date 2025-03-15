@@ -8,6 +8,7 @@ import useNPCManager from "../hooks/useNPCManager"; // ✅ Import NPC manager
 import { Cid, Moogle1, Cloud } from "../data/characters"; // ✅ Import NPC data
 import { leviaball, ramball, ifuritoball } from "../data/items";
 import Item from "./Item";
+import useCidLabTileManager from "../hooks/useCidLabTileManager";
 
 const TILE_SIZE = 32;
 const VIEWPORT_WIDTH = 512;
@@ -15,6 +16,8 @@ const VIEWPORT_HEIGHT = 384;
 
 function CidLab() {
   useTileManager();
+  useCidLabTileManager();
+
   const events = useSelector((state) => state.game.events); // ✅ Get event states
   const { width, height } = useSelector((state) => state.game.ovmap);
   const { tileX, tileY } = useSelector((state) => state.game.player);

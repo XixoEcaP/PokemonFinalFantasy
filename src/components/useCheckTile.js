@@ -19,6 +19,7 @@ import {
   updatePokemon,
   setWalkingDirection,
   setBattle,
+  setWalkingSteps,
 } from "../store/gameSlice";
 import {
   CidLabTiles,
@@ -116,13 +117,15 @@ export default function useCheckTile() {
         setTimeout(() => {
           dispatch(
             setOvmap({
-              ovmap: "overworld1",
+              ovmap: "overworldmap1",
               width: 32,
               height: 96,
               tileSize: 32,
               tiles: OverworldMap1Tiles2,
             })
           );
+          dispatch(setmap("map3"));
+
           dispatch(setKeyHandler("WorldKeyboardHandler"));
           dispatch(setPlayerTile({ tileX: 18, tileY: 80 }));
         }, 700); // ✅ Short delay for animation
@@ -169,6 +172,8 @@ export default function useCheckTile() {
         !events.ramball &&
         !events.ifuritoball
       ) {
+        dispatch(setTalkingNpc("leviaball"));
+
         dispatch(setShowBooleanBox(true));
         dispatch(setMessages(["Here is the Pokémon Levia!"]));
       }
@@ -211,88 +216,6 @@ export default function useCheckTile() {
 
   // ✅ Listen for Boolean Choice & Trigger Events
   // In the useEffect hook
-  useEffect(() => {
-    if (map === "cidlab" && !battle) {
-      if (
-        message === "" &&
-        events.leviaball &&
-        NextX === leviaball.tileX &&
-        NextY === leviaball.tileY &&
-        talkingNpc === "Cloud"
-      ) {
-        dispatch(setMyTeam(pokemonTeam));
-        const ram1 = createPokemon(pokemons.Ram, 5);
-        dispatch(setFoeTeam([ram1]));
-
-        dispatch(setNpcIsWalking(false));
-        dispatch(
-          setMessages([
-            "Hey",
-            "I'm chosing My Pokemon",
-            "Lets Battle",
-            "Battle",
-          ])
-        );
-      }
-      if (message === "Hey") {
-        dispatch(setNpcIsWalking(true));
-      }
-      if (message === "I'm chosing My Pokemon") {
-        dispatch(setWalkingDirection(1));
-        dispatch(setNpcIsWalking(false));
-      }
-      if (message === "Lets Battle") {
-        dispatch(setEvent("ramball"));
-      }
-      if (message === "Battle") {
-        dispatch(setOvmapTiles(CidLabTiles));
-        dispatch(setMessages(["Battling Cloud"]));
-        dispatch(setBattle(true));
-        dispatch(setTalkingNpc(""));
-      }
-
-      if (booleanChoice === true) {
-        if (NextX === Cid.tileX && NextY === Cid.tileY) {
-          dispatch(setMessages(["HOLA"]));
-        }
-
-        if (NextX === leviaball.tileX && NextY === leviaball.tileY) {
-          const newLevia = createPokemon(pokemons.Levia, 5);
-          dispatch(addPokemon(newLevia));
-          dispatch(setMessages(["You chose levia"]));
-
-          dispatch(setEvent("leviaball"));
-          dispatch(setTalkingNpc("Cloud"));
-        }
-        if (tileX === ramball.tileX && NextY === ramball.tileY) {
-          dispatch(setEvent("ramball"));
-          const newRam = createPokemon(pokemons.Ram, 5);
-          dispatch(addPokemon(newRam));
-          dispatch(setMessages(["You chose ram"]));
-        }
-        if (tileX === ifuritoball.tileX && NextY === ifuritoball.tileY) {
-          dispatch(setEvent("ifuritoball"));
-          const newIfurito = createPokemon(pokemons.Ifurito, 5);
-          dispatch(addPokemon(newIfurito));
-          dispatch(setMessages(["You chose ifurito"]));
-        }
-
-        dispatch(setBooleanChoice(null));
-      } else if (booleanChoice === false) {
-        dispatch(setBooleanChoice(null));
-      }
-    }
-  }, [
-    tileX,
-    tileY,
-    map,
-    booleanChoice,
-    dispatch,
-    message,
-    talkingNpc,
-    battle,
-    pokemonTeam,
-  ]);
 
   return checkTile;
 }

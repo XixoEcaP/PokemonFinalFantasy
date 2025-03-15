@@ -13,27 +13,30 @@ function Player() {
     (state) => state.game.player
   );
   const dispatch = useDispatch();
-  const [animFrame, setAnimFrame] = useState(0);
+  const [animFrame, setAnimFrame] = useState(1);
 
   // Determine stepping delay based on speed flag:
-  const stepDelay = faster ? 300 : 75;
+  const stepDelay = faster ? 300 : 200;
 
   useEffect(() => {
-    let timeoutId1, timeoutId2;
+    let timeoutId1, timeoutId2, timeoutId3;
 
     if (isWalking) {
       // Immediately show stepping frame 1
-      setAnimFrame(1);
+      setAnimFrame(2);
       // After stepDelay ms, change to stepping frame 2
       timeoutId1 = setTimeout(() => {
-        setAnimFrame(2);
+        setAnimFrame(3);
         // After another stepDelay ms, reset walking flag (idle frame 0)
         timeoutId2 = setTimeout(() => {
-          dispatch(setPlayerWalking(false));
+          setAnimFrame(0);
+          timeoutId3 = setTimeout(() => {
+            dispatch(setPlayerWalking(false));
+          }, stepDelay);
         }, stepDelay);
       }, stepDelay);
     } else {
-      setAnimFrame(0);
+      setAnimFrame(1);
     }
     return () => {
       clearTimeout(timeoutId1);

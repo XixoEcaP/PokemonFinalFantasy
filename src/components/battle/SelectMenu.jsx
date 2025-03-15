@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setState, setRound, setSwapped } from "../../store/battleSlice";
-import { setMessages } from "../../store/gameSlice";
+import {
+  setBattle,
+  setMessages,
+  setPlayerDirection,
+} from "../../store/gameSlice";
 import Fight from "./SelectMenu/Fight";
 import Bag from "./SelectMenu/Bag";
 import Pokemon from "./SelectMenu/Pokemon";
@@ -67,7 +71,8 @@ const SelectMenu = () => {
       dispatch(setState("fight"));
     } else if (selectedOption === 3) {
       console.log("Run selected");
-      dispatch(setState("run"));
+      dispatch(setState("home"));
+      dispatch(setBattle(false));
     }
   };
 

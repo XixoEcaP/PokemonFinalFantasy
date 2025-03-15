@@ -18,6 +18,8 @@ export default function useWorldKeyHandler() {
   const tiles = useSelector((state) => state.game.ovmap.tiles);
   const checkTile = useCheckTile();
   const keyHandler = useSelector((state) => state.game.keyHandler);
+  const map = useSelector((state) => state.game.map);
+
   const isPaused = useSelector((state) => state.game.isPaused);
   const throttleTime = faster ? 50 : 300;
   const movementIntervalRef = useRef(null);
@@ -41,7 +43,7 @@ export default function useWorldKeyHandler() {
       }
 
       if (e.key.toLowerCase() === "x") {
-        checkTile();
+        if (map === "map3" || map === "cidlab") checkTile();
         return;
       }
 
