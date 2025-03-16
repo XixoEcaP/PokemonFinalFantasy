@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useSelector } from "react-redux";
 
 const Gamepad = () => {
   const [heldKey, setHeldKey] = useState(null);
-  const [intervalId, setIntervalId] = useState(null);
+  const intervalIdRef = useRef(null); // Use ref to prevent interval issues
+
+  const battle = useSelector((state) => state.game.battle); // True = Battle Mode, False = Overworld
+  const isPaused = useSelector((state) => state.game.isPaused); // True = Battle Mode, False = Overworld
+  const booleanBox = useSelector((state) => state.game.booleanBox); // True = Battle Mode, False = Overworld
+
+  const gameState = useMemo(
+    () => battle || isPaused || booleanBox,
+    [battle, isPaused, booleanBox]
+  );
+
+  const isClickMode = gameState === true; // If in battle, use click mode
 
   const dispatchKeyEvent = (key, type) => {
     const eventOptions = {
@@ -15,26 +27,40 @@ const Gamepad = () => {
   };
 
   const startKeyPress = (key) => {
-    if (intervalId) return; // Prevent multiple intervals for movement keys
+    if (intervalIdRef.current) return; // Prevent multiple intervals
 
     dispatchKeyEvent(key, "keydown");
 
-    const id = setInterval(() => {
-      dispatchKeyEvent(key, "keydown");
-    }, 100);
-
-    setHeldKey(key);
-    setIntervalId(id);
+    if (!isClickMode) {
+      intervalIdRef.current = setInterval(() => {
+        dispatchKeyEvent(key, "keydown");
+      }, 100);
+      setHeldKey(key);
+    } else {
+      setTimeout(() => dispatchKeyEvent(key, "keyup"), 50);
+    }
   };
 
   const stopKeyPress = () => {
     if (heldKey) {
       dispatchKeyEvent(heldKey, "keyup");
     }
-    clearInterval(intervalId);
-    setIntervalId(null);
+    if (intervalIdRef.current) {
+      clearInterval(intervalIdRef.current);
+      intervalIdRef.current = null;
+    }
     setHeldKey(null);
   };
+
+  // Cleanup when game state changes (avoid key "sticking" issues)
+  useEffect(() => {
+    return () => {
+      if (intervalIdRef.current) {
+        clearInterval(intervalIdRef.current);
+        intervalIdRef.current = null;
+      }
+    };
+  }, [isClickMode]);
 
   // Styles
   const buttonStyle = {
@@ -62,16 +88,23 @@ const Gamepad = () => {
         marginTop: "80px",
       }}
     >
-      {/* Arrows - Holdable */}
+      {/* Debugging - Check game state */}
+      {console.log("Game State (battle mode):", gameState)}
+
+      {/* Arrows - Click Mode or Hold Mode */}
       <div style={{ display: "flex", justifyContent: "center" }}>
         <button
           style={buttonStyle}
-          onMouseDown={() => startKeyPress("ArrowUp")}
-          onMouseUp={stopKeyPress}
-          onMouseLeave={stopKeyPress}
-          onTouchStart={() => startKeyPress("ArrowUp")}
-          onTouchEnd={stopKeyPress}
-          onTouchCancel={stopKeyPress}
+          {...(isClickMode
+            ? { onClick: () => startKeyPress("ArrowUp") }
+            : {
+                onMouseDown: () => startKeyPress("ArrowUp"),
+                onMouseUp: stopKeyPress,
+                onMouseLeave: stopKeyPress,
+                onTouchStart: () => startKeyPress("ArrowUp"),
+                onTouchEnd: stopKeyPress,
+                onTouchCancel: stopKeyPress,
+              })}
         >
           ⬆️
         </button>
@@ -80,24 +113,31 @@ const Gamepad = () => {
       <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
         <button
           style={buttonStyle}
-          onMouseDown={() => startKeyPress("ArrowLeft")}
-          onMouseUp={stopKeyPress}
-          onClick={stopKeyPress}
-          onMouseLeave={stopKeyPress}
-          onTouchStart={() => startKeyPress("ArrowLeft")}
-          onTouchEnd={stopKeyPress}
-          onTouchCancel={stopKeyPress}
+          {...(isClickMode
+            ? { onClick: () => startKeyPress("ArrowLeft") }
+            : {
+                onMouseDown: () => startKeyPress("ArrowLeft"),
+                onMouseUp: stopKeyPress,
+                onMouseLeave: stopKeyPress,
+                onTouchStart: () => startKeyPress("ArrowLeft"),
+                onTouchEnd: stopKeyPress,
+                onTouchCancel: stopKeyPress,
+              })}
         >
           ⬅️
         </button>
         <button
           style={buttonStyle}
-          onMouseDown={() => startKeyPress("ArrowRight")}
-          onMouseUp={stopKeyPress}
-          onMouseLeave={stopKeyPress}
-          onTouchStart={() => startKeyPress("ArrowRight")}
-          onTouchEnd={stopKeyPress}
-          onTouchCancel={stopKeyPress}
+          {...(isClickMode
+            ? { onClick: () => startKeyPress("ArrowRight") }
+            : {
+                onMouseDown: () => startKeyPress("ArrowRight"),
+                onMouseUp: stopKeyPress,
+                onMouseLeave: stopKeyPress,
+                onTouchStart: () => startKeyPress("ArrowRight"),
+                onTouchEnd: stopKeyPress,
+                onTouchCancel: stopKeyPress,
+              })}
         >
           ➡️
         </button>
@@ -106,12 +146,16 @@ const Gamepad = () => {
       <div style={{ display: "flex", justifyContent: "center" }}>
         <button
           style={buttonStyle}
-          onMouseDown={() => startKeyPress("ArrowDown")}
-          onMouseUp={stopKeyPress}
-          onMouseLeave={stopKeyPress}
-          onTouchStart={() => startKeyPress("ArrowDown")}
-          onTouchEnd={stopKeyPress}
-          onTouchCancel={stopKeyPress}
+          {...(isClickMode
+            ? { onClick: () => startKeyPress("ArrowDown") }
+            : {
+                onMouseDown: () => startKeyPress("ArrowDown"),
+                onMouseUp: stopKeyPress,
+                onMouseLeave: stopKeyPress,
+                onTouchStart: () => startKeyPress("ArrowDown"),
+                onTouchEnd: stopKeyPress,
+                onTouchCancel: stopKeyPress,
+              })}
         >
           ⬇️
         </button>

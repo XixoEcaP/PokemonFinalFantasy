@@ -62,17 +62,17 @@ export default function useCidLabTileManager() {
         (events.leviaball || events.ramball || events.ifuritoball) &&
         talkingNpc === "Cloud"
       ) {
-        dispatch(setMyTeam(pokemonTeam));
         if (events.leviaball) {
           const foeTeam = createPokemon(pokemons.Ramuh, 5);
           dispatch(setFoeTeam([foeTeam]));
         } else if (events.ramball) {
-          const foeTeam = createPokemon(pokemons.Ifurito, 5);
+          const foeTeam = createPokemon(pokemons.Ifrit, 5);
           dispatch(setFoeTeam([foeTeam]));
         } else if (events.ifuritoball) {
-          const foeTeam = createPokemon(pokemons.Levia, 5);
+          const foeTeam = createPokemon(pokemons.Leviathan, 5);
           dispatch(setFoeTeam([foeTeam]));
         }
+        dispatch(setMyTeam(pokemonTeam));
 
         dispatch(setNpcIsWalking(false));
         dispatch(
@@ -118,23 +118,23 @@ export default function useCidLabTileManager() {
         }
 
         if (talkingNpc === "leviaball") {
-          const newLevia = createPokemon(pokemons.Levia, 5);
+          const newLevia = createPokemon(pokemons.Leviathan, 5);
           dispatch(addPokemon(newLevia));
-          dispatch(setMessages(["You chose levia"]));
+          dispatch(setMessages(["You choose " + newLevia.specie]));
           dispatch(setEvent("leviaball"));
           dispatch(setTalkingNpc("Cloud"));
         }
         if (talkingNpc === "ramball") {
-          const newRam = createPokemon(pokemons.Ram, 5);
+          const newRam = createPokemon(pokemons.Ramuh, 5);
           dispatch(addPokemon(newRam));
-          dispatch(setMessages(["You chose ram"]));
+          dispatch(setMessages(["You choose " + newRam.specie]));
           dispatch(setEvent("ramball"));
           dispatch(setTalkingNpc("Cloud"));
         }
         if (talkingNpc === "ifuritoball") {
-          const newIfurito = createPokemon(pokemons.Ifurito, 5);
+          const newIfurito = createPokemon(pokemons.Ifrit, 5);
           dispatch(addPokemon(newIfurito));
-          dispatch(setMessages(["You chose ifurito"]));
+          dispatch(setMessages(["You choose " + newIfurito.specie]));
           dispatch(setEvent("ifuritoball"));
           dispatch(setTalkingNpc("Cloud"));
         }

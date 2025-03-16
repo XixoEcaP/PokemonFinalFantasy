@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { nextMessage, setMessages } from "../store/gameSlice";
-import { setState, setRound } from "../store/battleSlice";
+import {
+  setState,
+  setRound,
+  updatePokemonInBattle,
+} from "../store/battleSlice";
+import useLevelUp from "../hooks/useLevelUp";
 
 export default function useMessageKeyHandler() {
   const dispatch = useDispatch();
@@ -15,6 +20,7 @@ export default function useMessageKeyHandler() {
   const foeTeam = useSelector((state) => state.battle.foeTeam);
   const walkingSteps = useSelector((state) => state.game.walkingSteps);
   const stepCount = useSelector((state) => state.game.stepCount);
+  const { levelUp } = useLevelUp();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -38,6 +44,20 @@ export default function useMessageKeyHandler() {
             dispatch(setState("myAttack"));
           }
         }
+        if (message === "Exp Gained") {
+          if (myTeam[0].exp >= myTeam[0].maxExp) {
+            const oldPokmeon = myTeam[0];
+
+            const newPokemon = levelUp(oldPokmeon);
+            dispatch(
+              updatePokemonInBattle({
+                id: oldPokmeon.id,
+                updatedPokemon: newPokemon,
+              })
+            );
+            dispatch(setMessages(["Level Ganied"]));
+          }
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -54,6 +74,7 @@ export default function useMessageKeyHandler() {
     messages,
     stepCount,
     walkingSteps,
+    foeTeam,
   ]);
 
   return null;

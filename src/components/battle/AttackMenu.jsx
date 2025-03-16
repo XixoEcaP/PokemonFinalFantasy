@@ -9,16 +9,42 @@ import MoveInfo from "./AttackMenu/MoveInfo";
 import { setState, setAttackMove, setmovePP } from "../../store/battleSlice";
 
 // Import different sprites for each move type
-import fireSprite from "../../assets/movebattle/fire.png";
-import waterSprite from "../../assets/movebattle/water.png";
+import bugSprite from "../../assets/movebattle/bug.png";
+import darkSprite from "../../assets/movebattle/dark.png";
+import dragonSprite from "../../assets/movebattle/dragon.png";
 import electricSprite from "../../assets/movebattle/electric.png";
+import fightingSprite from "../../assets/movebattle/fighting.png";
+import fireSprite from "../../assets/movebattle/fire.png";
+import flyingSprite from "../../assets/movebattle/flying.png";
+import ghostSprite from "../../assets/movebattle/ghost.png";
+import grassSprite from "../../assets/movebattle/grass.png";
+import groundSprite from "../../assets/movebattle/ground.png";
+import iceSprite from "../../assets/movebattle/ice.png";
 import normalSprite from "../../assets/movebattle/normal.png";
+import poisonSprite from "../../assets/movebattle/poison.png";
+import psychicSprite from "../../assets/movebattle/psychic.png"; // Assuming the correct filename is 'psychic.png'
+import rockSprite from "../../assets/movebattle/rock.png";
+import steelSprite from "../../assets/movebattle/steel.png";
+import waterSprite from "../../assets/movebattle/water.png";
 
 const moveTypeToSprite = {
-  Fire: fireSprite,
-  Water: waterSprite,
+  Bug: bugSprite,
+  Dark: darkSprite,
+  Dragon: dragonSprite,
   Electric: electricSprite,
-  Normal: normalSprite, // Default sprite for normal moves
+  Fighting: fightingSprite,
+  Fire: fireSprite,
+  Flying: flyingSprite,
+  Ghost: ghostSprite,
+  Grass: grassSprite,
+  Ground: groundSprite,
+  Ice: iceSprite,
+  Normal: normalSprite,
+  Poison: poisonSprite,
+  Psychic: psychicSprite, // Fixed typo from 'psichic'
+  Rock: rockSprite,
+  Steel: steelSprite,
+  Water: waterSprite,
 };
 
 const AttackMenu = () => {

@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { updatePokemon } from "../store/gameSlice"; // Action to update the specific Pokémon
+import { getPokemonMaxExp } from "./usePokemonMaxExp"; // Import function to get maxExp
 
 const useLevelUp = () => {
   const dispatch = useDispatch();
@@ -12,23 +13,27 @@ const useLevelUp = () => {
   };
 
   const levelUp = (pokemon) => {
-    if (!pokemon) return; // Ensure we have a valid Pokémon
+    if (!pokemon) return null; // Ensure we have a valid Pokémon
 
-    const { level } = pokemon; // Get current level of the Pokémon
+    const newLevel = pokemon.level + 1; // Increment level
     const updatedStats = {
-      hp: calculateStats(pokemon.stats.hp, level, true),
-      attack: calculateStats(pokemon.stats.attack, level),
-      defense: calculateStats(pokemon.stats.defense, level),
-      specialAttack: calculateStats(pokemon.stats.specialAttack, level),
-      specialDefense: calculateStats(pokemon.stats.specialDefense, level),
-      speed: calculateStats(pokemon.stats.speed, level),
+      hp: calculateStats(pokemon.stats.hp, newLevel, true),
+      attack: calculateStats(pokemon.stats.attack, newLevel),
+      defense: calculateStats(pokemon.stats.defense, newLevel),
+      specialAttack: calculateStats(pokemon.stats.specialAttack, newLevel),
+      specialDefense: calculateStats(pokemon.stats.specialDefense, newLevel),
+      speed: calculateStats(pokemon.stats.speed, newLevel),
     };
 
     const updatedPokemon = {
       ...pokemon,
       stats: updatedStats,
-      level: level + 1, // Increment the level
+      level: newLevel,
+      maxExp: getPokemonMaxExp(newLevel), // ✅ Update maxExp for new level
+      exp: pokemon.exp - pokemon.maxExp || 0,
     };
+
+    dispatch(updatePokemon({ id: pokemon.id, updatedPokemon })); // ✅ Dispatch update
 
     return updatedPokemon;
   };

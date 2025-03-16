@@ -16,7 +16,7 @@ function Player() {
   const [animFrame, setAnimFrame] = useState(1);
 
   // Determine stepping delay based on speed flag:
-  const stepDelay = faster ? 50 : 200;
+  const stepDelay = faster ? 50 : 300;
 
   useEffect(() => {
     let timeoutId1, timeoutId2, timeoutId3;

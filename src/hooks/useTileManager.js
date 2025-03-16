@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { OverworldMap1Tiles2 } from "../data/mapChunks";
 import {
+  setEvent,
   setmap,
   setCurrentTileSet,
   setOvmap,
@@ -11,8 +12,10 @@ import {
   setOvmapTiles,
   setGameOver,
   setBattle,
+  synchronizePokemonHp,
+  setTalkingNpc,
 } from "../store/gameSlice";
-import { setFoeTeam } from "../store/battleSlice";
+import { setFoeTeam, setMyTeam } from "../store/battleSlice";
 import useGetFoePokemon from "../hooks/useGetFoePokemon";
 
 export default function useTileManager() {
@@ -25,6 +28,9 @@ export default function useTileManager() {
   const gameOver = useSelector((state) => state.game.gameOver);
   const message = useSelector((state) => state.game.message);
   const battle = useSelector((state) => state.game.battle);
+  const pokemonTeam = useSelector((state) => state.game.pokemonTeam);
+  const npcIsWalking = useSelector((state) => state.game.npcIsWalking);
+
   const [newMap, setNewMap] = useState(currentMap);
   const getFoePokemon = useGetFoePokemon();
 
@@ -32,8 +38,7 @@ export default function useTileManager() {
     if (
       tiles &&
       tileY >= 0 &&
-      tileY < tiles.length &&
-      tileX >= 0 &&
+      (tileY < tiles.length) & (tileX >= 0) &&
       tileX < tiles[0].length
     ) {
       const newTileSet = tiles[tileY][tileX];
@@ -46,7 +51,9 @@ export default function useTileManager() {
       // ✅ Battle logic (Only calls function inside useEffect)
       const random = Math.floor(Math.random() * 100);
 
-      if (updatedTileSet === 2 && !battle && random > 95) {
+      if (updatedTileSet === 2 && !battle && !npcIsWalking && random > 93) {
+        dispatch(setMyTeam(pokemonTeam));
+
         const foePokemon = getFoePokemon(); // Now this function is stable and won't cause re-renders
         if (foePokemon) {
           dispatch(setMessages([foePokemon.name + " has appear"]));
@@ -59,7 +66,7 @@ export default function useTileManager() {
         dispatch(setCurrentTileSet(0));
       }
     }
-    if (gameOver && message === "") {
+    if (gameOver) {
       dispatch(
         setOvmap({
           ovmap: "overworldmap1",
@@ -69,6 +76,9 @@ export default function useTileManager() {
           tiles: OverworldMap1Tiles2,
         })
       );
+      dispatch(synchronizePokemonHp());
+      dispatch(setTalkingNpc(""));
+
       dispatch(setPlayerTile({ tileX: 18, tileY: 80 }));
       dispatch(setPlayerDirection(0));
       dispatch(setGameOver(false));
@@ -83,6 +93,8 @@ export default function useTileManager() {
     overworld,
     gameOver,
     message,
-    getFoePokemon, // ✅ Now stable due to useCallback
+    getFoePokemon,
+    npcIsWalking,
+    // ✅ Now stable due to useCallback
   ]);
 }

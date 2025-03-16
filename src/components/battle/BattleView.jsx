@@ -10,6 +10,8 @@ import {
   setRound,
   setDemage,
   swapFoePokemon,
+  setExp,
+  updatePokemonInBattle,
 } from "../../store/battleSlice";
 import {
   setBattle,
@@ -19,6 +21,7 @@ import {
 } from "../../store/gameSlice";
 import useCalculateDamage from "../../hooks/useCalculateDamage";
 import PokemonBattleMenu from "./PokemonBattleMenu";
+import useLevelUp from "../../hooks/useLevelUp";
 
 const BattleView = () => {
   const dispatch = useDispatch();
@@ -50,12 +53,16 @@ const BattleView = () => {
       dispatch(setMessages(["You Lost", "Gameover"]));
       dispatch(setBattle(false));
       dispatch(setGameOver(true));
+      dispatch(setState("home"));
+      dispatch(setPokemonTeam(myTeam));
+      return;
     }
     if (foeTeamDefeated && message === "") {
       dispatch(setMessages(["You Won!"]));
 
       dispatch(setBattle(false));
       dispatch(setPokemonTeam(myTeam));
+      return;
     }
 
     if (myTeam[0].hp <= 0 && message === "") {
@@ -68,7 +75,7 @@ const BattleView = () => {
 
       dispatch(setState("foeAttack"));
 
-      const damageValue = calculateDamage(myTeam[0], foeTeam[0], foeAttackMove);
+      const damageValue = calculateDamage(foeTeam[0], myTeam[0], foeAttackMove);
       dispatch(setDemage({ demage: damageValue, myAttack: false }));
       dispatch(
         setMessages([
@@ -109,9 +116,11 @@ const BattleView = () => {
               myTeam[0].name + " used " + myAttackMove.name,
               "It dealt " + damageValue,
               foeTeam[0].name + " Died",
+              "Exp Gained",
             ])
           );
           dispatch(setRound("2"));
+          dispatch(setExp(200));
         }
       } else {
         dispatch(setState("foeAttack"));
@@ -162,8 +171,11 @@ const BattleView = () => {
               myTeam[0].name + " used " + myAttackMove.name,
               "It dealt " + damageValue,
               foeTeam[0].name + " Died",
+              "Exp Gained",
             ])
           );
+          dispatch(setExp(200));
+
           dispatch(setRound("2"));
         } else {
           dispatch(

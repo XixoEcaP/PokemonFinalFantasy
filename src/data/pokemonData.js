@@ -9,7 +9,7 @@ const pokemons = {
     defense: 50,
     specialAttack: 60,
     specialDefense: 59,
-    speed: 2,
+    speed: 62,
     moves: [
       moves.attackMove,
       moves.waterMove,
@@ -160,7 +160,7 @@ const pokemons = {
     defense: 100,
     specialAttack: 80,
     specialDefense: 80,
-    speed: 85,
+    speed: 100,
     moves: [
       moves.attackMove,
       moves.firaMove,

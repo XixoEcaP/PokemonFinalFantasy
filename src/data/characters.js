@@ -2,6 +2,9 @@ import cidSprite from "../assets/characters/cid.png";
 import AuronSrite from "../assets/characters/auron.png";
 import MoogleSrptite from "../assets/characters/moogle.png";
 import CloudSprite from "../assets/characters/cloud.png";
+import squallSprite from "../assets/characters/squall.png";
+import vincentSripte from "../assets/characters/vincent.png";
+
 export const Cid = {
   character: "Cid",
   tileX: 7,
@@ -33,7 +36,7 @@ export const Auron2 = {
   tileX: 15,
   tileY: 63,
   ovmap: "overworldmap1",
-  sprite: AuronSrite,
+  sprite: vincentSripte,
   direction: 1,
 };
 export const Auron3 = {
@@ -41,7 +44,7 @@ export const Auron3 = {
   tileX: 15,
   tileY: 45,
   ovmap: "overworldmap1",
-  sprite: AuronSrite,
+  sprite: squallSprite,
   direction: 0,
 };
 

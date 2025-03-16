@@ -7,9 +7,11 @@ import {
   setFoeAttackMove,
 } from "../../store/battleSlice";
 import {
+  addPokemon,
   setBattle,
   setMessages,
   setPlayerDirection,
+  setPokemonTeam,
 } from "../../store/gameSlice";
 import Fight from "./SelectMenu/Fight";
 import Bag from "./SelectMenu/Bag";
@@ -22,6 +24,8 @@ const SelectMenu = () => {
   const gameState = useSelector((state) => state.battle.state);
   const swapped = useSelector((state) => state.battle.swapped);
   const foeTeam = useSelector((state) => state.battle.foeTeam);
+  const myTeam = useSelector((state) => state.battle.myTeam);
+
   const chooseFoeMove = useFoeMoveSelection(foeTeam[0]);
   const keyHandlerG = useSelector((state) => state.game.keyHandler);
   const round = useSelector((state) => state.battle.round);
@@ -43,7 +47,7 @@ const SelectMenu = () => {
       return;
     }
     let newSelected = selected;
-
+    console.log(selected);
     if (e.key === "ArrowDown" && directionMap[selected].down !== null) {
       newSelected = directionMap[selected].down; // Move Down
     } else if (e.key === "ArrowUp" && directionMap[selected].up !== null) {
@@ -71,7 +75,11 @@ const SelectMenu = () => {
       dispatch(setState("pokemonMenu"));
     } else if (selectedOption === 1) {
       console.log("Bag selected");
-      dispatch(setState("bag"));
+      dispatch(setPokemonTeam(myTeam));
+
+      dispatch(setMessages(["Added " + foeTeam[0].name]));
+      dispatch(addPokemon(foeTeam[0]));
+      dispatch(setBattle(false));
     } else if (selectedOption === 2) {
       console.log("Fight selected");
       dispatch(setState("fight"));
@@ -100,7 +108,7 @@ const SelectMenu = () => {
     return () => {
       window.removeEventListener("keydown", keyHandler);
     };
-  }, [selected, keyHandlerG, gameState, swapped]);
+  }, [selected, keyHandlerG, gameState, swapped, foeTeam]);
 
   return (
     <div

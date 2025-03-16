@@ -5,16 +5,15 @@ import CidLab from "../components/CidLab";
 const { createPokemon } = useCreatePokemon();
 
 const pokemonList = [
-  createPokemon(pokemons.Malboro, 5),
-  createPokemon(pokemons.OneEye, 5),
-  createPokemon(pokemons.Goblin, 5),
-  createPokemon(pokemons.Ifurito, 5),
-  createPokemon(pokemons.Bomb, 5),
-  createPokemon(pokemons.Ram, 5),
-  createPokemon(pokemons.Bandersnatch, 5),
-  createPokemon(pokemons.Hemoth, 5),
-  createPokemon(pokemons.Hecteyes, 5),
-  createPokemon(pokemons.Coeurl, 5),
+  createPokemon(pokemons.GMalboro, 3),
+  createPokemon(pokemons.Ahriman, 3),
+  createPokemon(pokemons.GiantFlan, 3),
+  createPokemon(pokemons.Bomb, 3),
+  createPokemon(pokemons.Coeurlregina, 3),
+  createPokemon(pokemons.Hecteyes, 3),
+  createPokemon(pokemons.Bandersnatch, 3),
+  createPokemon(pokemons.Hobgoblin, 3),
+  createPokemon(pokemons.Hemoth, 2),
 ];
 
 // pokemonBattles.js
@@ -30,8 +29,7 @@ const pokemonBattles = {
     { pokemon: pokemonList[5], chance: 10 },
     { pokemon: pokemonList[6], chance: 10 },
     { pokemon: pokemonList[7], chance: 10 },
-    { pokemon: pokemonList[8], chance: 10 },
-    { pokemon: pokemonList[9], chance: 10 },
+    { pokemon: pokemonList[8], chance: 20 },
   ],
   // Add other maps as needed
 };

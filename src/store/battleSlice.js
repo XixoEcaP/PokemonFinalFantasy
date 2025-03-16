@@ -109,6 +109,17 @@ const gameSlice = createSlice({
     setFoeTeam: (state, action) => {
       state.foeTeam = action.payload;
     },
+    setExp: (state, action) => {
+      state.myTeam[0].exp += action.payload;
+    },
+    updatePokemonInBattle: (state, action) => {
+      const { id, updatedPokemon } = action.payload;
+
+      // Update Pokémon in the team immutably
+      state.myTeam = state.myTeam.map((pokemon) =>
+        pokemon.id === id ? { ...updatedPokemon } : pokemon
+      );
+    },
   },
 });
 
@@ -125,6 +136,8 @@ export const {
   swapCurrentPokemon,
   swapFoePokemon,
   setSwapped,
+  updatePokemonInBattle,
+  setExp,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

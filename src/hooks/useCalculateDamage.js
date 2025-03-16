@@ -31,7 +31,15 @@ const useCalculateDamage = () => {
       critical *
       STAB *
       effectiveness;
-
+    console.log(
+      attacker.name,
+      defender.name,
+      move.name,
+      attack,
+      defense,
+      move.category,
+      attacker.stats.attack
+    );
     return Math.floor(damage);
   };
 

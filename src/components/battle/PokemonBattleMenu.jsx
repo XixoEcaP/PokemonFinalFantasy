@@ -16,23 +16,22 @@ const PokemonBattleMenu = () => {
 
   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(0);
 
+  // ✅ Update Redux AFTER render
+  useEffect(() => {
+    dispatch(setCurrentPokemonIndex(selectedPokemonIndex));
+  }, [selectedPokemonIndex, dispatch]);
+
   const handleKeyDown = (e) => {
     if (keyHandler === "MessageKeyboardHandler") {
       return;
     }
 
     if (e.key === "ArrowUp") {
-      setSelectedPokemonIndex((prev) => {
-        const newIndex = (prev - 1 + myTeam.length) % myTeam.length;
-        dispatch(setCurrentPokemonIndex(newIndex));
-        return newIndex;
-      });
+      setSelectedPokemonIndex(
+        (prev) => (prev - 1 + myTeam.length) % myTeam.length
+      );
     } else if (e.key === "ArrowDown") {
-      setSelectedPokemonIndex((prev) => {
-        const newIndex = (prev + 1) % myTeam.length;
-        dispatch(setCurrentPokemonIndex(newIndex));
-        return newIndex;
-      });
+      setSelectedPokemonIndex((prev) => (prev + 1) % myTeam.length);
     } else if (e.key === "x") {
       if (myTeam[selectedPokemonIndex].hp <= 0) {
         dispatch(setMessages(["New Pokemon dead"]));

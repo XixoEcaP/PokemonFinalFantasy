@@ -17,7 +17,7 @@ const MyHp = ({ pokemon }) => {
       <div
         style={{
           position: "relative",
-          left: "80px", // ✅ Adjust freely as you want
+          left: "70px", // ✅ Adjust freely as you want
           top: "10px", // ✅ Adjust freely as you want
           color: "white",
           fontSize: "18px",

@@ -33,6 +33,8 @@ const initialState = {
     ramball: false,
     ifuritoball: false,
     pokeball1: false,
+    trainer1: false,
+    trainer2: false,
   },
   player: {
     tileX: 11,
@@ -64,7 +66,11 @@ const gameSlice = createSlice({
       state.next.nextX = tileX;
       state.next.nextY = tileY;
     },
-
+    synchronizePokemonHp(state) {
+      state.pokemonTeam.forEach((pokemon) => {
+        pokemon.hp = pokemon.stats.hp;
+      });
+    },
     setBattle: (state, action) => {
       state.battle = action.payload; // ✅ Toggle pause state
     },
@@ -81,7 +87,6 @@ const gameSlice = createSlice({
       const newPokemon = action.payload;
 
       // Assign a unique ID to each Pokémon
-      newPokemon.id = uuidv4(); // Generate a unique ID for each Pokémon
 
       // If the team has fewer than 6 Pokémon, add it to the team
       if (state.pokemonTeam.length < 6) {
@@ -305,6 +310,7 @@ export const {
   setWalkingSteps,
   setGameOver,
   setStepCount,
+  synchronizePokemonHp,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

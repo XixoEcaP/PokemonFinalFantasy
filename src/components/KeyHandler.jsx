@@ -21,7 +21,7 @@ export default function useWorldKeyHandler() {
   const map = useSelector((state) => state.game.map);
 
   const isPaused = useSelector((state) => state.game.isPaused);
-  const throttleTime = faster ? 50 : 100;
+  const throttleTime = faster ? 50 : 75;
   const movementIntervalRef = useRef(null);
   const lastMoveTimeRef = useRef(0); // Store last move timestamp
 

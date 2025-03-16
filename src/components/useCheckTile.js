@@ -173,7 +173,12 @@ export default function useCheckTile() {
         dispatch(setTalkingNpc("leviaball"));
 
         dispatch(setShowBooleanBox(true));
-        dispatch(setMessages(["Here is the Pokémon Levia!"]));
+        dispatch(
+          setMessages([
+            "Here is the Water Pokémon Leviathan!",
+            "Will you take it?",
+          ])
+        );
       }
 
       // ✅ Pokémon Event: Collect Ram
@@ -188,7 +193,12 @@ export default function useCheckTile() {
         dispatch(setTalkingNpc("ramball"));
 
         dispatch(setShowBooleanBox(true));
-        dispatch(setMessages(["Here is the Pokémon Ram!"]));
+        dispatch(
+          setMessages([
+            "Here is the Thunder Pokémon Ramuh!",
+            "Will you take it?",
+          ])
+        );
       }
       if (
         nextX === pokeball1.tileX &&
@@ -211,7 +221,9 @@ export default function useCheckTile() {
         dispatch(setTalkingNpc("ifuritoball"));
 
         dispatch(setShowBooleanBox(true));
-        dispatch(setMessages(["Here is the Pokémon Ifurito!"]));
+        dispatch(
+          setMessages(["Here is the Fire Pokémon Ifrit!", "Will you take it?"])
+        );
       }
     }
   };
