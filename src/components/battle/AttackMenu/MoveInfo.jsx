@@ -16,7 +16,6 @@ const MoveInfo = ({ move, movePP }) => {
           justifyContent: "center",
           color: "white",
           fontSize: "13px",
-          fontFamily: "fantasy",
         }}
       >
         <div>

@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { moveTalkingNpc } from "../store/gameSlice";
+import { moveTalkingNpc, setNpcDirection } from "../store/gameSlice";
 
 export default function useNpcWalking({ character, direction, steps = 5 }) {
   const dispatch = useDispatch();
   const talkingNpc = useSelector((state) => state.game.talkingNpc);
+  const walkingDirection = useSelector((state) => state.game.talkingNpc);
 
   // Direction to dx, dy mapping
   const getMovement = (direction) => {
@@ -24,6 +25,7 @@ export default function useNpcWalking({ character, direction, steps = 5 }) {
 
   useEffect(() => {
     if (!talkingNpc || talkingNpc.character !== character) return;
+    setNpcDirection(walkingDirection);
 
     const { dx, dy } = getMovement(direction);
 
@@ -40,7 +42,7 @@ export default function useNpcWalking({ character, direction, steps = 5 }) {
     }, 200); // Move every 200ms
 
     return () => clearInterval(interval); // Cleanup the interval
-  }, [talkingNpc, character, direction, steps, dispatch]);
+  }, [talkingNpc, character, direction, steps, dispatch, walkingDirection]);
 
   return;
 }

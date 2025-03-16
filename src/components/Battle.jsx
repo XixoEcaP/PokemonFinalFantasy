@@ -11,6 +11,7 @@ const Battle = () => {
         position: "relative",
         overflow: "hidden",
         border: "1px solid black",
+        paddingRight: "20px",
       }}
     >
       {/* Battle View Component */}

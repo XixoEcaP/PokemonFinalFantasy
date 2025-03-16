@@ -21,14 +21,16 @@ export default function useWorldKeyHandler() {
   const map = useSelector((state) => state.game.map);
 
   const isPaused = useSelector((state) => state.game.isPaused);
-  const throttleTime = faster ? 50 : 300;
+  const throttleTime = faster ? 50 : 100;
   const movementIntervalRef = useRef(null);
-  const currentKeyActive = useRef(false);
-  const walkTimeoutRef = useRef(null);
+  const lastMoveTimeRef = useRef(0); // Store last move timestamp
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === " ") {
+      const now = Date.now();
+      if (now - lastMoveTimeRef.current < throttleTime) return; // Prevent fast re-trigger
+
+      if (e.key === " " && !isPaused) {
         dispatch(setPause(true));
         dispatch(setKeyHandler("PauseKeyHandler"));
         return;
@@ -100,13 +102,8 @@ export default function useWorldKeyHandler() {
           return;
         }
 
-        currentKeyActive.current = true;
         dispatch(movePlayer({ dx, dy }));
-
-        movementIntervalRef.current = setInterval(() => {
-          dispatch(movePlayer({ dx, dy }));
-          dispatch(setPlayerWalking(true));
-        }, throttleTime);
+        lastMoveTimeRef.current = now; // Update last move time
       } else {
         dispatch(setPlayerDirection(newDirection));
       }
@@ -124,16 +121,7 @@ export default function useWorldKeyHandler() {
         return;
       }
 
-      if (currentKeyActive.current) {
-        if (movementIntervalRef.current) {
-          clearInterval(movementIntervalRef.current);
-          movementIntervalRef.current = null;
-        }
-        walkTimeoutRef.current = setTimeout(() => {
-          dispatch(setPlayerWalking(false));
-        }, 1000);
-        currentKeyActive.current = false;
-      }
+      dispatch(setPlayerWalking(false));
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -142,9 +130,6 @@ export default function useWorldKeyHandler() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      if (movementIntervalRef.current)
-        clearInterval(movementIntervalRef.current);
-      if (walkTimeoutRef.current) clearTimeout(walkTimeoutRef.current);
     };
   }, [
     isPaused,

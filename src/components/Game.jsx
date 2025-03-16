@@ -12,8 +12,8 @@ import Battle from "./Battle";
 
 function Game() {
   const dispatch = useDispatch;
-  useWroldKeyHandler();
   useMessageHandler();
+  useWroldKeyHandler();
 
   const message = useSelector((state) => state.game.message);
   const booleanBox = useSelector((state) => state.game.booleanBox);

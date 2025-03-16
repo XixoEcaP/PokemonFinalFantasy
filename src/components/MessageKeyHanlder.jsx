@@ -13,9 +13,15 @@ export default function useMessageKeyHandler() {
   const round = useSelector((state) => state.battle.round);
   const myTeam = useSelector((state) => state.battle.myTeam);
   const foeTeam = useSelector((state) => state.battle.foeTeam);
+  const walkingSteps = useSelector((state) => state.game.walkingSteps);
+  const stepCount = useSelector((state) => state.game.stepCount);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (walkingSteps > stepCount) {
+        return;
+      }
+
       if (
         keyHandler === "MessageKeyboardHandler" &&
         e.key.toLowerCase() === "x"
@@ -34,13 +40,21 @@ export default function useMessageKeyHandler() {
         }
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [dispatch, keyHandler, round, gameState, message, messages]);
+  }, [
+    dispatch,
+    keyHandler,
+    round,
+    gameState,
+    message,
+    messages,
+    stepCount,
+    walkingSteps,
+  ]);
 
   return null;
 }

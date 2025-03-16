@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setState, setRound, setSwapped } from "../../store/battleSlice";
+import {
+  setState,
+  setRound,
+  setSwapped,
+  setFoeAttackMove,
+} from "../../store/battleSlice";
 import {
   setBattle,
   setMessages,
@@ -10,13 +15,14 @@ import Fight from "./SelectMenu/Fight";
 import Bag from "./SelectMenu/Bag";
 import Pokemon from "./SelectMenu/Pokemon";
 import Run from "./SelectMenu/Run";
+import useFoeMoveSelection from "../../hooks/useFoeMoveSelection";
 
 const SelectMenu = () => {
   const dispatch = useDispatch();
   const gameState = useSelector((state) => state.battle.state);
   const swapped = useSelector((state) => state.battle.swapped);
   const foeTeam = useSelector((state) => state.battle.foeTeam);
-
+  const chooseFoeMove = useFoeMoveSelection(foeTeam[0]);
   const keyHandlerG = useSelector((state) => state.game.keyHandler);
   const round = useSelector((state) => state.battle.round);
 
@@ -80,11 +86,13 @@ const SelectMenu = () => {
   useEffect(() => {
     if (gameState === "home") {
       if (swapped) {
-        dispatch(setMessages(["New Pokemon " + foeTeam[0].name]));
-
+        dispatch(setMessages(["New Pokémon " + foeTeam[0].name]));
         dispatch(setSwapped(false));
       }
-
+      const foeMove = chooseFoeMove(); // ✅ Call the function to get a move
+      if (foeMove) {
+        dispatch(setFoeAttackMove(foeMove));
+      }
       dispatch(setRound("0"));
 
       window.addEventListener("keydown", keyHandler);

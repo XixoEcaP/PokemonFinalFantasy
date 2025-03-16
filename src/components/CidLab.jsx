@@ -40,7 +40,7 @@ function CidLab() {
       npc === Cloud &&
       !events.leviaball &&
       !events.ramball &&
-      !events.leviaball
+      !events.ifuritoball
     )
       return false;
     return true;

@@ -8,7 +8,8 @@ const initialState = {
   gameOver: false,
   battle: false,
   npcIsWalking: false,
-  walkingSteps: 1,
+  walkingSteps: 0,
+  stepCount: 0,
   walkingDirection: 0,
   items: ["Potion", "Pokeball"],
   isPaused: false,
@@ -63,6 +64,7 @@ const gameSlice = createSlice({
       state.next.nextX = tileX;
       state.next.nextY = tileY;
     },
+
     setBattle: (state, action) => {
       state.battle = action.payload; // ✅ Toggle pause state
     },
@@ -129,6 +131,10 @@ const gameSlice = createSlice({
     },
     setWalkingSteps: (state, action) => {
       state.walkingSteps = action.payload;
+    },
+
+    setStepCount: (state, action) => {
+      state.stepCount = action.payload; // ✅ Toggle pause state
     },
     setmap: (state, action) => {
       state.map = action.payload;
@@ -298,6 +304,7 @@ export const {
   setBattle,
   setWalkingSteps,
   setGameOver,
+  setStepCount,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

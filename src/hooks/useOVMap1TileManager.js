@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { OverworldMap1Tiles2 } from "../data/mapChunks";
-import { Cid, Auron } from "../data/characters";
+import { Auron, Auron2, Auron3 } from "../data/characters";
 import useCreatePokemon from "./useCreatePokemon";
 
 import {
@@ -17,6 +17,8 @@ import {
   setTalkingNpc,
   setNpcIsWalking,
   setWalkingSteps,
+  setWalkingDirection,
+  setStepCount,
 } from "../store/gameSlice";
 import { setFoeTeam } from "../store/battleSlice";
 import useGetFoePokemon from "../hooks/useGetFoePokemon";
@@ -45,33 +47,83 @@ export default function useOVMap1TileManager() {
       dispatch(setmap(newMap));
     }
     if (
-      tileX === Auron.tileX &&
-      tileY < Auron.tileY + 5 &&
-      tileY > Auron.tileY &&
-      talkingNpc === ""
+      tileX === Auron3.tileX &&
+      tileY < Auron3.tileY + 5 &&
+      tileY > Auron3.tileY &&
+      talkingNpc === "" &&
+      !battle
     ) {
-      dispatch(setTalkingNpc("Auron"));
+      dispatch(setTalkingNpc("Auron3"));
 
       dispatch(setMessages(["wooo", "lets Go", "Battling Auron"]));
     }
     if (
-      tileX === Auron.tileX &&
-      tileY < Auron.tileY + 5 &&
-      tileY > Auron.tileY &&
-      talkingNpc === "Auron" &&
+      tileX === Auron3.tileX &&
+      tileY < Auron3.tileY + 5 &&
+      tileY > Auron3.tileY &&
+      talkingNpc === "Auron3" &&
       message === "wooo"
     ) {
-      dispatch(setWalkingSteps(tileY - Auron.tileY - 1));
+      dispatch(setWalkingSteps(tileY - Auron3.tileY - 1));
       dispatch(setNpcIsWalking(true));
+      dispatch(setWalkingDirection(Auron3.direction));
     }
     if (
-      tileX === Auron.tileX &&
-      tileY < Auron.tileY + 5 &&
-      tileY > Auron.tileY &&
-      talkingNpc === "Auron" &&
+      tileX === Auron3.tileX &&
+      tileY < Auron3.tileY + 5 &&
+      tileY > Auron3.tileY &&
+      talkingNpc === "Auron3" &&
       message === "Battling Auron"
     ) {
       const foeTeam = [createPokemon(pokemons.Coeurl, 5)];
+      dispatch(setOvmapTiles(OverworldMap1Tiles2));
+
+      dispatch(setFoeTeam(foeTeam));
+
+      dispatch(setBattle(true));
+      dispatch(setTalkingNpc(""));
+      dispatch(setWalkingSteps(0));
+
+      dispatch(setStepCount(0));
+      dispatch(setNpcIsWalking(false));
+    }
+    if (
+      tileY === Auron2.tileY &&
+      tileX > Auron2.tileX - 7 &&
+      tileX < Auron2.tileX &&
+      talkingNpc === "" &&
+      !battle
+    ) {
+      dispatch(setTalkingNpc("Auron2"));
+
+      dispatch(setMessages(["wooo", "lets Go", "Battling Auron"]));
+    }
+    if (
+      tileY === Auron2.tileY &&
+      tileX > Auron2.tileX - 7 &&
+      tileX < Auron2.tileX &&
+      talkingNpc === "Auron2" &&
+      message === "wooo"
+    ) {
+      dispatch(setWalkingDirection(Auron2.direction));
+
+      dispatch(setWalkingSteps(Auron2.tileX - tileX - 1));
+      dispatch(setNpcIsWalking(true));
+    }
+    if (
+      tileY === Auron2.tileY &&
+      tileX > Auron2.tileX - 7 &&
+      tileX < Auron2.tileX &&
+      talkingNpc === "Auron2" &&
+      message === "Battling Auron"
+    ) {
+      const foeTeam = [createPokemon(pokemons.Coeurl, 5)];
+      dispatch(setOvmapTiles(OverworldMap1Tiles2));
+      dispatch(setTalkingNpc(""));
+      dispatch(setNpcIsWalking(false));
+      dispatch(setWalkingSteps(0));
+
+      dispatch(setStepCount(0));
 
       dispatch(setFoeTeam(foeTeam));
 

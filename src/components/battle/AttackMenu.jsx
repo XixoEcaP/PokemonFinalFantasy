@@ -24,9 +24,18 @@ const moveTypeToSprite = {
 const AttackMenu = () => {
   const dispatch = useDispatch();
   const myTeam = useSelector((state) => state.battle.myTeam); // Access myTeam from Redux store
+  const AttackMove = useSelector((state) => state.battle.AttackMove); // Access myTeam from Redux store
 
   const selectedMove = useSelector((state) => state.battle.AttackMove);
-  const [selected, setSelected] = useState(0); // Track selected move index (0 to 3)
+  const [selected, setSelected] = useState(() => {
+    if (!myTeam || !myTeam[0]) return 0; // ✅ Ensure myTeam[0] exists
+
+    const index = myTeam[0].currentMoves.findIndex(
+      (move) => move.name === AttackMove.name
+    );
+
+    return index !== -1 ? index : 0; // ✅ Default to first move if not found
+  }); // Track selected move index (0 to 3)
 
   // Check if myTeam is defined and has at least one Pokémon
   const hasValidTeam = myTeam && myTeam[0];

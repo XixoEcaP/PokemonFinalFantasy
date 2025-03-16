@@ -9,6 +9,7 @@ export const Cid = {
   ovmap: "cidlab",
   sprite: cidSprite,
   direction: 0,
+  walks: false,
 };
 export const Cloud = {
   character: "Cloud",
@@ -23,6 +24,22 @@ export const Auron = {
   character: "Auron",
   tileX: 11,
   tileY: 72,
+  ovmap: "overworldmap1",
+  sprite: AuronSrite,
+  direction: 0,
+};
+export const Auron2 = {
+  character: "Auron2",
+  tileX: 15,
+  tileY: 63,
+  ovmap: "overworldmap1",
+  sprite: AuronSrite,
+  direction: 1,
+};
+export const Auron3 = {
+  character: "Auron3",
+  tileX: 15,
+  tileY: 45,
   ovmap: "overworldmap1",
   sprite: AuronSrite,
   direction: 0,

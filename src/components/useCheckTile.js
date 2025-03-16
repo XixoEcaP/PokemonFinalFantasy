@@ -89,7 +89,6 @@ export default function useCheckTile() {
       console.log("Player stepping on:", nextX, nextY, nextTile);
 
       if (nextX === 18 && nextY === 79 && map === "map3") {
-        dispatch(setFaster(true));
         dispatch(setPlayerWalking(true));
         const dx = 0;
         const dy = -1;
@@ -111,7 +110,6 @@ export default function useCheckTile() {
         }, 700); // ✅ Short delay for animation
       }
       if (nextX === 7 && nextY === 22 && map === "cidlab") {
-        dispatch(setFaster(true));
         dispatch(setPlayerWalking(true));
         dispatch(setKeyHandler(""));
         setTimeout(() => {
@@ -187,6 +185,8 @@ export default function useCheckTile() {
         !events.ramball &&
         !events.ifuritoball
       ) {
+        dispatch(setTalkingNpc("ramball"));
+
         dispatch(setShowBooleanBox(true));
         dispatch(setMessages(["Here is the Pokémon Ram!"]));
       }
@@ -208,6 +208,8 @@ export default function useCheckTile() {
         !events.ramball &&
         !events.ifuritoball
       ) {
+        dispatch(setTalkingNpc("ifuritoball"));
+
         dispatch(setShowBooleanBox(true));
         dispatch(setMessages(["Here is the Pokémon Ifurito!"]));
       }

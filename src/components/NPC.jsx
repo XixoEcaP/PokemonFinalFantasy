@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { moveTalkingNpc, setOvmapTiles } from "../store/gameSlice"; // Action for moving NPC sprite
+import {
+  moveTalkingNpc,
+  setOvmapTiles,
+  setStepCount,
+} from "../store/gameSlice"; // Action for moving NPC sprite
 import {
   OverworldMap1Tiles2,
   OverworldMap1Tiles,
@@ -21,12 +25,13 @@ export default function NPC({ npc }) {
   const map = useSelector((state) => state.game.ovmap.tiles); // Check if the NPC is walking
   const walkingSteps = useSelector((state) => state.game.walkingSteps); // Check if the NPC is walking
   const walkingDirection = useSelector((state) => state.game.walkingDirection); // Check if the NPC is walking
+  const booleanBox = useSelector((state) => state.game.booleanBox); // Check if the NPC is walking
 
   const playerX = useSelector((state) => state.game.player.tileX); // Player position
   const playerY = useSelector((state) => state.game.player.tileY); // Player position
 
   // Set the number of steps
-  const stepCount = useRef(0); // Track the current step count using useRef
+  const stepCount = useSelector((state) => state.game.stepCount); // Player position
 
   const [animFrame, setAnimFrame] = useState(0);
   const [npcPosition, setNpcPosition] = useState({
@@ -44,7 +49,7 @@ export default function NPC({ npc }) {
 
   // Update NPC direction when talking to the player
   useEffect(() => {
-    if (isTalking && !npcIsWalking) {
+    if ((isTalking && !npcIsWalking && !npc.walks) || booleanBox) {
       const dx = playerX - npc.tileX;
       const dy = playerY - npc.tileY;
 
@@ -55,14 +60,20 @@ export default function NPC({ npc }) {
       }
     } else {
       setNpcDirection(npc.direction); // Reset to default direction
+      if (npc.walks) {
+        setNpcDirection(walkingDirection); // Reset to default direction
+      }
     }
   }, [isTalking, playerX, playerY, npcIsWalking]);
 
   // Handle NPC movement when it's walking and count steps
   useEffect(() => {
+    if (talkingNpc === npc.character && npc.walks && walkingDirection) {
+      setNpcDirection(walkingDirection);
+    }
     if (npcIsWalking && talkingNpc === npc.character) {
       const interval = setInterval(() => {
-        if (stepCount.current >= walkingSteps) {
+        if (stepCount >= walkingSteps) {
           clearInterval(interval); // Stop the interval once steps are completed
           return;
         }
@@ -71,20 +82,19 @@ export default function NPC({ npc }) {
         const dy = walkingDirection === 0 ? 1 : walkingDirection === 3 ? -1 : 0;
 
         moveNpc(dx, dy);
+        setNpcDirection(walkingDirection);
 
         setNpcPosition((prev) => ({
           tileX: prev.tileX + dx,
           tileY: prev.tileY + dy,
         }));
 
-        stepCount.current += 1;
+        dispatch(setStepCount(stepCount + 1));
       }, 300); // Move every 200ms
 
       return () => {
         clearInterval(interval);
       };
-    } else if (talkingNpc === npc.character && npc.walks) {
-      setNpcDirection(walkingDirection);
     }
   }, [
     npcIsWalking,
@@ -93,6 +103,8 @@ export default function NPC({ npc }) {
     npcDirection,
     isTalking,
     walkingSteps,
+    booleanBox,
+    stepCount,
   ]);
 
   useGetTile(npc, npcPosition);
