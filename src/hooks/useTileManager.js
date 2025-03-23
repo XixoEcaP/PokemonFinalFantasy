@@ -85,6 +85,7 @@ export default function useTileManager() {
           height: 96,
           tileSize: 32,
           tiles: OverworldMap1Tiles2,
+          ovTiles: OverworldMap1Tiles2,
         })
       );
       dispatch(synchronizePokemonHp());

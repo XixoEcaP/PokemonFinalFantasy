@@ -1,21 +1,8 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Player from "./Player";
+
 import overworldSprite from "../assets/overworld1.png";
 import useTileManager from "../hooks/useTileManager";
-import { Auron } from "../data/characters"; // ✅ Import NPC data
-import { pokeball1 } from "../data/items";
-import Item from "./Item";
-import NPC from "./NPC";
-import useNPCManager from "../hooks/useNPCManager";
-import PauseMenu from "./PauseMenu";
-import {
-  setItems,
-  setPokemonTeam,
-  setOvmapTiles,
-  setOvmap,
-} from "../store/gameSlice";
-import { OverworldMap1Tiles2 } from "../data/mapChunks";
 
 const TILE_SIZE = 32;
 const VIEWPORT_WIDTH = 512;

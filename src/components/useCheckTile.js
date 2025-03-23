@@ -22,6 +22,8 @@ import {
   setWalkingSteps,
   setNext,
   setTalkingItem,
+  setBattleVictory,
+  addItem,
 } from "../store/gameSlice";
 import {
   CidLabTiles,
@@ -93,6 +95,7 @@ export default function useCheckTile() {
               height: 24,
               tileSize: 32,
               tiles: CidLabTiles,
+              ovTiles: CidLabTiles,
             })
           );
           dispatch(setKeyHandler("WorldKeyboardHandler"));
@@ -111,29 +114,14 @@ export default function useCheckTile() {
               height: 96,
               tileSize: 32,
               tiles: OverworldMap1Tiles2,
+              ovTiles: OverworldMap1Tiles2,
             })
           );
           dispatch(setmap("map3"));
-
+          dispatch(setBattleVictory(false));
           dispatch(setKeyHandler("WorldKeyboardHandler"));
           dispatch(setPlayerTile({ tileX: 18, tileY: 80 }));
         }, 700); // ✅ Short delay for animation
-      }
-
-      // ✅ Update Map Tileset (Auron Event)
-      if (
-        nextX === Auron.tileX &&
-        nextY === Auron.tileY &&
-        map === "map3" &&
-        !events.leviaball &&
-        !events.ramball &&
-        !events.ifuritoball
-      ) {
-        dispatch(
-          setMessages(["HEY", "FINAL FANTASY", "I'm Auron", "Go get a pokemon"])
-        );
-
-        dispatch(setTalkingNpc("Auron"));
       }
 
       // ✅ Pokémon Event: Collect Levia
@@ -178,11 +166,13 @@ export default function useCheckTile() {
       if (
         nextX === pokeball1.tileX &&
         nextY === pokeball1.tileY &&
-        map === "map3" &&
+        map === "map2" &&
         !events.pokeball1
       ) {
         dispatch(setEvent("pokeball1"));
         dispatch(setOvmapTiles(OverworldMap1Tiles2));
+        dispatch(addItem("Potion"));
+        dispatch(setMessages(["Potion Added"]));
       }
       // ✅ Pokémon Event: Collect Ifurito
       if (

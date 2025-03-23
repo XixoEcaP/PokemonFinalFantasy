@@ -26,6 +26,7 @@ const initialState = {
   foeAttackMove: pokemonList[2].currentMoves[0],
   round: "0",
   demage: "0",
+  runable: true,
 };
 
 const gameSlice = createSlice({
@@ -89,6 +90,9 @@ const gameSlice = createSlice({
     setMoveFrame: (state, action) => {
       state.moveFrame = action.payload;
     },
+    setRunable: (state, action) => {
+      state.runable = action.payload;
+    },
   },
 });
 
@@ -105,6 +109,7 @@ export const {
   setPlayerFrame,
   setPokeballFrame,
   setMoveFrame,
+  setRunable,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

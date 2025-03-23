@@ -3,16 +3,22 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   moveTalkingNpc,
   setMessages,
-  setOvmapTiles,
+  setAnimatedNpc,
+  setWalkingDirection,
   setStepCount,
   setTalkingNpc,
-} from "../store/gameSlice"; // Action for moving NPC sprite
-import {
-  OverworldMap1Tiles2,
-  OverworldMap1Tiles,
-  CidLabTiles,
-} from "../data/mapChunks";
+  setBattle,
+  setBattleNpc,
+  setEvent,
+  setWalkingSteps,
+  setNpcIsWalking,
+  setOvmapTiles,
+  addItem,
+  setBattleVictory,
+} from "../store/gameSlice";
+
 import useGetTile from "../hooks/useGetTile";
+import { setFoeTeam, setRound, setRunable } from "../store/battleSlice";
 
 const TILE_SIZE = 32;
 const SPRITE_WIDTH = 32;
@@ -21,22 +27,26 @@ const FRAME_COUNT = 4;
 
 export default function NPC({ npc }) {
   const dispatch = useDispatch();
-  const talkingNpc = useSelector((state) => state.game.talkingNpc); // Get active NPC
-  const npcIsWalking = useSelector((state) => state.game.npcIsWalking); // Check if the NPC is walking
-  const keyHandler = useSelector((state) => state.game.keyHandler); // Check if the NPC is walking
-  const animatedNpc = useSelector((state) => state.game.animatedNpc); // Get active NPC
-  const walkingSteps = useSelector((state) => state.game.walkingSteps); // Check if the NPC is walking
-  const walkingDirection = useSelector((state) => state.game.walkingDirection); // Check if the NPC is walking
-  const booleanBox = useSelector((state) => state.game.booleanBox); // Check if the NPC is walking
-  const nextX = useSelector((state) => state.game.next.nextX); // Check if the NPC is walking
-  const nextY = useSelector((state) => state.game.next.nextY); // Check if the NPC is walking
-  const battle = useSelector((state) => state.game.battle); // Check if the NPC is walking
+  const talkingNpc = useSelector((state) => state.game.talkingNpc);
+  const npcIsWalking = useSelector((state) => state.game.npcIsWalking);
+  const keyHandler = useSelector((state) => state.game.keyHandler);
+  const animatedNpc = useSelector((state) => state.game.animatedNpc);
+  const walkingSteps = useSelector((state) => state.game.walkingSteps);
+  const walkingDirection = useSelector((state) => state.game.walkingDirection);
+  const booleanBox = useSelector((state) => state.game.booleanBox);
+  const nextX = useSelector((state) => state.game.next.nextX);
+  const nextY = useSelector((state) => state.game.next.nextY);
+  const battle = useSelector((state) => state.game.battle);
+  const message = useSelector((state) => state.game.message);
+  const messages = useSelector((state) => state.game.messages);
+  const events = useSelector((state) => state.game.events);
+  const battleNpc = useSelector((state) => state.game.battleNpc);
+  const battleVictory = useSelector((state) => state.game.battleVictory);
+  const ovTiles = useSelector((state) => state.game.ovmap.ovTiles);
 
-  const playerX = useSelector((state) => state.game.player.tileX); // Player position
-  const playerY = useSelector((state) => state.game.player.tileY); // Player position
-
-  // Set the number of steps
-  const stepCount = useSelector((state) => state.game.stepCount); // Player position
+  const playerX = useSelector((state) => state.game.player.tileX);
+  const playerY = useSelector((state) => state.game.player.tileY);
+  const stepCount = useSelector((state) => state.game.stepCount);
 
   const [animFrame, setAnimFrame] = useState(0);
   const [npcPosition, setNpcPosition] = useState({
@@ -51,26 +61,24 @@ export default function NPC({ npc }) {
 
   const isTalking = talkingNpc === npc.character;
 
-  // Update NPC direction when talking to the player
   useEffect(() => {
-    if ((isTalking && !npcIsWalking && !npc.walks) || booleanBox) {
+    if ((isTalking && !npcIsWalking) || booleanBox) {
       const dx = playerX - npc.tileX;
       const dy = playerY - npc.tileY;
 
       if (Math.abs(dx) > Math.abs(dy)) {
-        setNpcDirection(dx > 0 ? 2 : 1); // Right : Left
+        setNpcDirection(dx > 0 ? 2 : 1);
       } else {
-        setNpcDirection(dy > 0 ? 0 : 3); // Down : Up
+        setNpcDirection(dy > 0 ? 0 : 3);
       }
     } else {
-      setNpcDirection(npc.direction); // Reset to default direction
+      setNpcDirection(npc.direction);
       if (npc.walks) {
-        setNpcDirection(walkingDirection); // Reset to default direction
+        setNpcDirection(walkingDirection);
       }
     }
   }, [isTalking, playerX, playerY, npcIsWalking]);
 
-  // Handle NPC movement when it's walking and count steps
   useEffect(() => {
     if (animatedNpc === npc.character && npc.walks && walkingDirection) {
       setNpcDirection(walkingDirection);
@@ -78,10 +86,10 @@ export default function NPC({ npc }) {
     if (npcIsWalking && animatedNpc === npc.character) {
       const interval = setInterval(() => {
         if (stepCount >= walkingSteps) {
-          clearInterval(interval); // Stop the interval once steps are completed
+          clearInterval(interval);
+          dispatch(setNpcIsWalking(false));
           return;
         }
-        setNpcDirection(walkingDirection);
         const dx = walkingDirection === 2 ? 1 : walkingDirection === 1 ? -1 : 0;
         const dy = walkingDirection === 0 ? 1 : walkingDirection === 3 ? -1 : 0;
 
@@ -94,43 +102,111 @@ export default function NPC({ npc }) {
         }));
 
         dispatch(setStepCount(stepCount + 1));
-      }, 300); // Move every 200ms
+      }, 300);
 
-      return () => {
-        clearInterval(interval);
-      };
+      return () => clearInterval(interval);
     }
-  }, [
-    npcIsWalking,
-    talkingNpc,
-    walkingDirection,
-    npcDirection,
-    isTalking,
-    walkingSteps,
-    booleanBox,
-    stepCount,
-  ]);
+  }, [npcIsWalking, animatedNpc, walkingDirection, stepCount]);
+
+  useEffect(() => {
+    if (
+      animatedNpc === npc.character &&
+      !npcIsWalking &&
+      npc.trainer &&
+      !battle &&
+      message === "" &&
+      !events[npc.event]
+    ) {
+      dispatch(setRound(false));
+
+      dispatch(setFoeTeam(npc.team));
+      dispatch(setBattle(true));
+      dispatch(setMessages(npc.battleMessages || ["Battle"]));
+      dispatch(setBattleNpc(npc.character));
+      dispatch(setOvmapTiles(ovTiles));
+      dispatch(setWalkingSteps(0));
+      dispatch(setStepCount(0));
+    }
+  }, [animatedNpc, npcIsWalking, npc, battle, message, events, dispatch]);
+
   useEffect(() => {
     if (nextX === npcPosition.tileX && nextY === npcPosition.tileY) {
-      console.log(npc.character);
-
       dispatch(setTalkingNpc(npc.character));
       if (npc.messages && !battle) {
-        console.log("yooooo");
         dispatch(setMessages(npc.messages));
+        if (npc.items) {
+          dispatch(addItem("Pokeball"));
+        }
       }
     }
   }, [nextX, nextY, npcPosition, battle]);
 
+  useEffect(() => {
+    if (
+      npc.trainer &&
+      battleVictory &&
+      battleNpc === npc.character &&
+      !events[npc.event]
+    ) {
+      dispatch(setEvent(npc.event));
+      dispatch(setAnimatedNpc(""));
+      dispatch(setRunable(true));
+      dispatch(setBattleVictory(false));
+    }
+  }, [battleVictory, battleNpc, npc, events, dispatch]);
+
+  useEffect(() => {
+    if (
+      npc.trainer &&
+      !battle &&
+      !events[npc.event] &&
+      message === "" &&
+      animatedNpc === "" &&
+      !npcIsWalking &&
+      npc.range
+    ) {
+      const dx = playerX - npc.tileX;
+      const dy = playerY - npc.tileY;
+
+      if (Math.abs(dx) <= npc.range && dy === 0) {
+        dispatch(setRunable(false));
+
+        dispatch(setAnimatedNpc(npc.character));
+        dispatch(setWalkingDirection(dx > 0 ? 2 : 1));
+        dispatch(setWalkingSteps(Math.abs(dx) - 1));
+        dispatch(setMessages(npc.walkingMessages || ["Battle"]));
+        dispatch(setNpcIsWalking(true));
+        setNpcDirection(walkingDirection);
+      } else if (Math.abs(dy) <= npc.range && dx === 0) {
+        dispatch(setRunable(false));
+
+        dispatch(setAnimatedNpc(npc.character));
+        dispatch(setWalkingDirection(dy > 0 ? 0 : 3));
+        dispatch(setWalkingSteps(Math.abs(dy) - 1));
+        dispatch(setMessages(npc.walkingMessages || ["Battle"]));
+        dispatch(setNpcIsWalking(true));
+        setNpcDirection(walkingDirection);
+      }
+    }
+  }, [
+    npc,
+    playerX,
+    playerY,
+    battle,
+    message,
+    events,
+    animatedNpc,
+    npcIsWalking,
+  ]);
+
   useGetTile(npc, npcPosition);
 
-  // Update animation frame when walking
   useEffect(() => {
     const animationInterval = setInterval(() => {
       setAnimFrame((prevFrame) => (prevFrame + 1) % FRAME_COUNT);
     }, 150);
 
-    return () => clearInterval(animationInterval); // Cleanup animation interval
+    return () => clearInterval(animationInterval);
   }, []);
 
   const left = npcPosition.tileX * TILE_SIZE;

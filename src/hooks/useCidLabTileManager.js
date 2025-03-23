@@ -2,26 +2,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
   setMessages,
-  setOvmap,
-  setPlayerTile,
-  setmap,
   addPokemon,
   setEvent,
-  setShowBooleanBox,
   setBooleanChoice,
   setTalkingNpc,
-  setPlayerWalking,
-  movePlayer,
-  setFaster,
-  setKeyHandler,
   setNpcIsWalking,
   setOvmapTiles,
-  updatePokemon,
   setWalkingDirection,
   setBattle,
   setWalkingSteps,
   setStepCount,
   setAnimatedNpc,
+  setPokemonTeam,
 } from "../store/gameSlice";
 import {
   CidLabTiles,
@@ -33,8 +25,7 @@ import { leviaball, ramball, ifuritoball, pokeball1 } from "../data/items";
 import pokemons from "../data/pokemonData";
 import useCreatePokemon from "../hooks/useCreatePokemon";
 import useLevelUp from "../hooks/useLevelUp";
-import { setFoeTeam } from "../store/battleSlice";
-import { setPokemonTeam } from "../store/gameSlice";
+import { setFoeTeam, setRunable } from "../store/battleSlice";
 
 export default function useCidLabTileManager() {
   const dispatch = useDispatch();
@@ -78,6 +69,7 @@ export default function useCidLabTileManager() {
           dispatch(setFoeTeam([foeTeam]));
         }
         dispatch(setPokemonTeam(pokemonTeam));
+        dispatch(setRunable(false));
 
         dispatch(setNpcIsWalking(false));
         dispatch(
@@ -111,7 +103,6 @@ export default function useCidLabTileManager() {
         dispatch(setWalkingDirection(1));
         dispatch(setWalkingSteps(0));
         dispatch(setStepCount(0));
-
         dispatch(setOvmapTiles(CidLabTiles));
         dispatch(setBattle(true));
         dispatch(setTalkingNpc(""));

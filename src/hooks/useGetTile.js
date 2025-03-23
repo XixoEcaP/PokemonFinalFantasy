@@ -32,7 +32,6 @@ export default function useGetTile(npc, npcPosition) {
         return row;
       });
 
-      // Dispatch the action to update the map in Redux store
       dispatch(setOvmapTiles(newMap));
 
       console.log("NPC moved to tile:", npcPosition);

@@ -19,6 +19,7 @@ import {
   setPlayerFrame,
   setPokeballFrame,
   setMoveFrame,
+  setRunable,
 } from "../../store/battleSlice";
 import {
   setDemage,
@@ -30,6 +31,7 @@ import {
   setPokemonTeam,
   addPokemon,
   setKeyHandler,
+  setBattleVictory,
 } from "../../store/gameSlice";
 import useCalculateDamage from "../../hooks/useCalculateDamage";
 import PokemonBattleMenu from "./PokemonBattleMenu";
@@ -75,14 +77,17 @@ const BattleView = () => {
       dispatch(setGameOver(true));
       dispatch(setState("intro"));
       dispatch(setFoeTeam([]));
+      dispatch(setRunable(true));
       return;
     }
     if (foeTeamDefeated && message === "") {
       dispatch(setMessages(["You Won!"]));
       dispatch(setState("intro"));
-
+      dispatch(setBattleVictory(true));
       dispatch(setBattle(false));
       dispatch(setFoeTeam([]));
+      dispatch(setRunable(true));
+
       return;
     }
 
@@ -96,12 +101,17 @@ const BattleView = () => {
 
       dispatch(setState("foeAttack"));
 
-      const damageValue = calculateDamage(foeTeam[0], myTeam[0], foeAttackMove);
+      const damageObject = calculateDamage(
+        foeTeam[0],
+        myTeam[0],
+        foeAttackMove
+      );
+      const damageValue = damageObject.damage;
       dispatch(setDemage({ demage: damageValue }));
       dispatch(
         setMessages([
           foeTeam[0].name + " used " + foeAttackMove.name,
-          "It dealt " + damageValue,
+          "It dealt " + damageValue + " " + damageObject.effectiveness,
         ])
       );
     }
@@ -116,18 +126,19 @@ const BattleView = () => {
     if (gameState === "battle" && message === "" && round === "0") {
       if (myTeam[0]?.stats?.speed >= foeTeam[0]?.stats?.speed) {
         console.log(myTeam[0]?.stats?.speed, foeTeam[0]?.stats?.speed);
-        const damageValue = calculateDamage(
+        const damageObject = calculateDamage(
           myTeam[0],
           foeTeam[0],
           myAttackMove
         );
+        const damageValue = damageObject.damage;
         dispatch(setFoeDemage({ demage: damageValue }));
 
         dispatch(setState("myAttack"));
         dispatch(
           setMessages([
             myTeam[0].name + " used " + myAttackMove.name,
-            "It dealt " + damageValue,
+            "It dealt " + damageValue + " " + damageObject.effectiveness,
           ])
         );
         dispatch(setRound("1"));
@@ -136,13 +147,13 @@ const BattleView = () => {
           dispatch(
             setMessages([
               myTeam[0].name + " used " + myAttackMove.name,
-              "It dealt " + damageValue,
+              "It dealt " + damageValue + " " + damageObject.effectiveness,
               foeTeam[0].name + " Died",
               "Exp Gained",
             ])
           );
           dispatch(setRound("2"));
-          dispatch(setExp(200));
+          dispatch(setExp(50));
         }
       } else {
         console.log(myTeam[0]?.stats?.speed, foeTeam[0]?.stats?.speed);
@@ -151,23 +162,25 @@ const BattleView = () => {
 
         dispatch(setRound("1"));
 
-        const damageValue = calculateDamage(
+        const damageObject = calculateDamage(
           foeTeam[0],
           myTeam[0],
           foeAttackMove
         );
+        const damageValue = damageObject.damage;
+
         dispatch(setDemage({ demage: damageValue }));
         dispatch(
           setMessages([
             foeTeam[0].name + " used " + foeAttackMove.name,
-            "It dealt " + damageValue,
+            "It dealt " + damageValue + " " + damageObject.effectiveness,
           ])
         );
         if (myTeam[0].hp - damageValue <= 0) {
           dispatch(
             setMessages([
               foeTeam[0].name + " used " + foeAttackMove.name,
-              "It dealt " + damageValue,
+              "It dealt " + damageValue + " " + damageObject.effectiveness,
               myTeam[0].name + " Died",
             ])
           );
@@ -182,18 +195,20 @@ const BattleView = () => {
     if (message === "" && round === "1") {
       if (gameState === "myAttack") {
         dispatch(setRound("2"));
-        const damageValue = calculateDamage(
+        const damageObject = calculateDamage(
           myTeam[0],
           foeTeam[0],
           myAttackMove
         );
+        const damageValue = damageObject.damage;
+
         dispatch(setFoeDemage({ demage: damageValue }));
 
         if (foeTeam[0].hp - damageValue <= 0) {
           dispatch(
             setMessages([
               myTeam[0].name + " used " + myAttackMove.name,
-              "It dealt " + damageValue,
+              "It dealt " + damageValue + " " + damageObject.effectiveness,
               foeTeam[0].name + " Died",
               "Exp Gained",
             ])
@@ -205,22 +220,24 @@ const BattleView = () => {
           dispatch(
             setMessages([
               myTeam[0].name + " used " + myAttackMove.name,
-              "It dealt " + damageValue,
+              "It dealt " + damageValue + " " + damageObject.effectiveness,
             ])
           );
         }
       } else if (gameState === "foeAttack") {
         dispatch(setRound("2"));
-        const damageValue = calculateDamage(
+        const damageObject = calculateDamage(
           foeTeam[0],
           myTeam[0],
           foeAttackMove
         );
+        const damageValue = damageObject.damage;
+
         dispatch(setDemage({ demage: damageValue }));
         dispatch(
           setMessages([
             foeTeam[0].name + " used " + foeAttackMove.name,
-            "It dealt " + damageValue,
+            "It dealt " + damageValue + " " + damageObject.effectiveness,
           ])
         );
 
@@ -228,7 +245,7 @@ const BattleView = () => {
           dispatch(
             setMessages([
               foeTeam[0].name + " used " + foeAttackMove.name,
-              "It dealt " + damageValue,
+              "It dealt " + damageValue + " " + damageObject.effectiveness,
               myTeam[0].name + " Died",
             ])
           );

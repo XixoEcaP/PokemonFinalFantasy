@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/PokemonFinalFantasy/static/css/main.2969e6ec.css",
-    "main.js": "/PokemonFinalFantasy/static/js/main.af608ff6.js",
+    "main.js": "/PokemonFinalFantasy/static/js/main.48f21e47.js",
     "static/media/overworld1.png": "/PokemonFinalFantasy/static/media/overworld1.e5b31d8b48c17ebb2449.png",
     "static/media/battlebg.png": "/PokemonFinalFantasy/static/media/battlebg.075fd8fc5541c45a1f21.png",
     "static/media/cidlab.png": "/PokemonFinalFantasy/static/media/cidlab.c62c86ddd9a87aad9ef8.png",
@@ -9,15 +9,18 @@
     "static/media/ramuh.png": "/PokemonFinalFantasy/static/media/ramuh.3a31326858fb954d02cc.png",
     "static/media/behemoth.png": "/PokemonFinalFantasy/static/media/behemoth.0c1f0fee584081ebd7c9.png",
     "static/media/player.png": "/PokemonFinalFantasy/static/media/player.52880c5b189ef0fcc370.png",
+    "static/media/cerberus.png": "/PokemonFinalFantasy/static/media/cerberus.209a39f55b439d6f78ec.png",
+    "static/media/garuda.png": "/PokemonFinalFantasy/static/media/garuda.bd2246cf81f839bf4a87.png",
     "static/media/cid.png": "/PokemonFinalFantasy/static/media/cid.d6b3b5083284728f6c7b.png",
     "static/media/vincent.png": "/PokemonFinalFantasy/static/media/vincent.be64c3f01e447df69000.png",
+    "static/media/warrior.png": "/PokemonFinalFantasy/static/media/warrior.b04ace71caac1cb3807c.png",
     "static/media/behemothback.png": "/PokemonFinalFantasy/static/media/behemothback.620e61cf3bd3b934071b.png",
     "index.html": "/PokemonFinalFantasy/index.html",
     "main.2969e6ec.css.map": "/PokemonFinalFantasy/static/css/main.2969e6ec.css.map",
-    "main.af608ff6.js.map": "/PokemonFinalFantasy/static/js/main.af608ff6.js.map"
+    "main.48f21e47.js.map": "/PokemonFinalFantasy/static/js/main.48f21e47.js.map"
   },
   "entrypoints": [
     "static/css/main.2969e6ec.css",
-    "static/js/main.af608ff6.js"
+    "static/js/main.48f21e47.js"
   ]
 }

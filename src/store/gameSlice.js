@@ -19,13 +19,14 @@ const pokemonList = [
 const initialState = {
   gameOver: false,
   battle: false,
+  battleVictory: false,
   npcIsWalking: false,
   walkingSteps: 0,
   stepCount: 0,
   walkingDirection: 0,
   items: [
-    { item: "Potion", x: 1 },
-    { item: "Pokeball", x: 10 },
+    { item: "Potion", x: 5 },
+    { item: "Pokeball", x: 5 },
   ],
   isPaused: false,
   pokemonSelected: false,
@@ -34,6 +35,7 @@ const initialState = {
   talkingNpc: "",
   talkingItem: "",
   animatedNpc: "",
+  battleNpc: "",
   starter: "",
   showBooleanBox: false,
   booleanBox: false, // Whether the boolean prompt is visible
@@ -45,12 +47,11 @@ const initialState = {
   otherPkemons: [],
   currentPokemonIndex: 0,
   curreItemIndex: 0,
-
   next: {
     nextY: 0,
     nextX: 0,
   },
-  pokemonTeam: [pokemonList[0], pokemonList[6], pokemonList[1], pokemonList[7]],
+  pokemonTeam: [],
   events: {
     leviaball: false,
     ramball: false,
@@ -58,6 +59,8 @@ const initialState = {
     pokeball1: false,
     trainer1: false,
     trainer2: false,
+    trainer3: false,
+    trainer4: false,
   },
   player: {
     tileX: 11,
@@ -72,6 +75,7 @@ const initialState = {
     height: 96,
     tileSize: 32,
     tiles: OverworldMap1Tiles2,
+    ovTiles: OverworldMap1Tiles2,
   },
   map: "map3",
   currentTileSet: 1,
@@ -106,6 +110,7 @@ const gameSlice = createSlice({
     setWalkingDirection: (state, action) => {
       state.walkingDirection = action.payload;
     },
+
     addPokemon: (state, action) => {
       const newPokemon = { ...action.payload }; // Create a new object before modifying
       newPokemon.id = uuidv4(); // Assign a unique ID
@@ -169,6 +174,9 @@ const gameSlice = createSlice({
     },
     setmap: (state, action) => {
       state.map = action.payload;
+    },
+    setBattleVictory: (state, action) => {
+      state.battleVictory = action.payload;
     },
     setCurrentTileSet: (state, action) => {
       state.currentTileSet = action.payload;
@@ -293,7 +301,9 @@ const gameSlice = createSlice({
     setAnimatedNpc: (state, action) => {
       state.animatedNpc = action.payload; // ✅ Store the NPC being talked to
     },
-
+    setBattleNpc: (state, action) => {
+      state.battleNpc = action.payload; // ✅ Store the NPC being talked to
+    },
     setNpcIsWalking: (state, action) => {
       state.npcIsWalking = action.payload; // ✅ Store the NPC being talked to
     },
@@ -444,6 +454,8 @@ export const {
   setNext,
   setTalkingItem,
   setAnimatedNpc,
+  setBattleVictory,
+  setBattleNpc,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

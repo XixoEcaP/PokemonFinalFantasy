@@ -28,7 +28,7 @@ export default function useMessageKeyHandler() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (message === messages[messages.length - 1] || message === "") {
+      if (message === "") {
         dispatch(setNext({ nextX: 0, nextY: 0 }));
         dispatch(setTalkingNpc(""));
       }

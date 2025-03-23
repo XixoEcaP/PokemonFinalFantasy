@@ -25,7 +25,7 @@ const SelectMenu = () => {
   const gameState = useSelector((state) => state.battle.state);
   const swapped = useSelector((state) => state.battle.swapped);
   const foeTeam = useSelector((state) => state.battle.foeTeam);
-  const myTeam = useSelector((state) => state.game.pokemonTeam);
+  const runable = useSelector((state) => state.battle.runable);
 
   const chooseFoeMove = useFoeMoveSelection(foeTeam[0]);
   const keyHandlerG = useSelector((state) => state.game.keyHandler);
@@ -81,11 +81,15 @@ const SelectMenu = () => {
       console.log("Fight selected");
       dispatch(setState("fight"));
     } else if (selectedOption === 3) {
-      console.log("Run selected");
-      dispatch(setFoeTeam([]));
-      dispatch(setState("intro"));
+      if (runable) {
+        console.log("Run selected");
+        dispatch(setFoeTeam([]));
+        dispatch(setState("intro"));
 
-      dispatch(setBattle(false));
+        dispatch(setBattle(false));
+      } else {
+        dispatch(setMessages(["Can't Run!"]));
+      }
     }
   };
 
@@ -107,7 +111,7 @@ const SelectMenu = () => {
     return () => {
       window.removeEventListener("keydown", keyHandler);
     };
-  }, [selected, keyHandlerG, gameState, swapped, foeTeam]);
+  }, [selected, keyHandlerG, gameState, swapped, foeTeam, runable]);
 
   return (
     <div

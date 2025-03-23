@@ -1,8 +1,8 @@
 import PokeballSrpite from "../assets/characters/pokeball.png";
 export const pokeball1 = {
   character: "pokeball1",
-  tileX: 16,
-  tileY: 86,
+  tileX: 22,
+  tileY: 67,
   ovmap: "overworldmap1",
   sprite: PokeballSrpite,
 };

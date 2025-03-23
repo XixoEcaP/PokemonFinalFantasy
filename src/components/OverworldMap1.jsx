@@ -3,7 +3,17 @@ import { useSelector, useDispatch } from "react-redux";
 import Player from "./Player";
 import overworldSprite from "../assets/overworld1.png";
 import useTileManager from "../hooks/useTileManager";
-import { Auron, Auron2, Auron3 } from "../data/characters"; // ✅ Import NPC data
+import {
+  Auron,
+  Squall,
+  Vincent,
+  Auron2,
+  Aerith,
+  Tifa,
+  Chocobo1,
+  Chocobo2,
+  Chocobo3,
+} from "../data/characters"; // ✅ Import NPC data
 import { pokeball1 } from "../data/items";
 import Item from "./Item";
 import NPC from "./NPC";
@@ -35,7 +45,17 @@ function OverworldMap1() {
   });
 
   // Get all NPCs for this map
-  const npcs = useNPCManager([Auron, Auron2, Auron3]);
+  const npcs = useNPCManager([
+    Auron,
+    Squall,
+    Vincent,
+    Auron2,
+    Aerith,
+    Tifa,
+    Chocobo1,
+    Chocobo2,
+    Chocobo3,
+  ]);
   const visibleChars = npcs.filter((npc) => {
     if (
       npc === Auron &&

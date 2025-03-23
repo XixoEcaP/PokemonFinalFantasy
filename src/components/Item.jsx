@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setOvmapTiles } from "../store/gameSlice"; // Action for moving NPC sprite
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import useGetTile from "../hooks/useGetTile";
-import { pokeball1 } from "../data/items";
-import {
-  CidLabTiles,
-  OverworldMap1Tiles,
-  OverworldMap1Tiles2,
-} from "../data/mapChunks";
 
 const TILE_SIZE = 32;
 const SPRITE_WIDTH = 32;

@@ -67,6 +67,7 @@ const useSaveLoadGame = () => {
           width: parsed.ovmap.width,
           height: parsed.ovmap.height,
           tileSize: parsed.ovmap.tileSize,
+          ovTiles: parsed.ovmap.ovTiles,
         })
       ); // keep original tiles
       dispatch(setTalkingNpc(""));
