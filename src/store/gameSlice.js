@@ -3,7 +3,19 @@ import { OverworldMap1Tiles2 } from "../data/mapChunks";
 import pokemons from "../data/pokemonData";
 import useCreatePokemon from "../hooks/useCreatePokemon";
 import { v4 as uuidv4 } from "uuid"; // To generate unique IDs for Pokémon
+const { createPokemon } = useCreatePokemon();
 
+const pokemonList = [
+  createPokemon(pokemons.Ifrit, 5),
+  createPokemon(pokemons.Ahriman, 5),
+  createPokemon(pokemons.Hobgoblin, 5),
+  createPokemon(pokemons.Ifurito, 5),
+  createPokemon(pokemons.Ahriman, 5),
+  createPokemon(pokemons.Bomb, 5),
+  createPokemon(pokemons.Leviathan, 5),
+  createPokemon(pokemons.Behemoth, 5),
+  createPokemon(pokemons.Ramuh, 5),
+];
 const initialState = {
   gameOver: false,
   battle: false,
@@ -11,9 +23,17 @@ const initialState = {
   walkingSteps: 0,
   stepCount: 0,
   walkingDirection: 0,
-  items: ["Potion", "Pokeball"],
+  items: [
+    { item: "Potion", x: 1 },
+    { item: "Pokeball", x: 10 },
+  ],
   isPaused: false,
+  pokemonSelected: false,
+  movesMenu: false,
+  secondSelect: false,
   talkingNpc: "",
+  talkingItem: "",
+  animatedNpc: "",
   starter: "",
   showBooleanBox: false,
   booleanBox: false, // Whether the boolean prompt is visible
@@ -23,11 +43,14 @@ const initialState = {
   message: "", // Currently displayed message
   currentMessageIndex: 0,
   otherPkemons: [],
-  pokemonTeam: [],
+  currentPokemonIndex: 0,
+  curreItemIndex: 0,
+
   next: {
     nextY: 0,
     nextX: 0,
   },
+  pokemonTeam: [pokemonList[0], pokemonList[6], pokemonList[1], pokemonList[7]],
   events: {
     leviaball: false,
     ramball: false,
@@ -63,8 +86,8 @@ const gameSlice = createSlice({
     },
     setNext: (state, action) => {
       const { nextX, nextY } = action.payload;
-      state.next.nextX = tileX;
-      state.next.nextY = tileY;
+      state.next.nextX = nextX;
+      state.next.nextY = nextY;
     },
     synchronizePokemonHp(state) {
       state.pokemonTeam.forEach((pokemon) => {
@@ -84,15 +107,12 @@ const gameSlice = createSlice({
       state.walkingDirection = action.payload;
     },
     addPokemon: (state, action) => {
-      const newPokemon = action.payload;
+      const newPokemon = { ...action.payload }; // Create a new object before modifying
+      newPokemon.id = uuidv4(); // Assign a unique ID
 
-      // Assign a unique ID to each Pokémon
-
-      // If the team has fewer than 6 Pokémon, add it to the team
       if (state.pokemonTeam.length < 6) {
         state.pokemonTeam.push(newPokemon);
       } else {
-        // Otherwise, add it to otherPokemons
         state.otherPkemons.push(newPokemon);
       }
     },
@@ -141,6 +161,12 @@ const gameSlice = createSlice({
     setStepCount: (state, action) => {
       state.stepCount = action.payload; // ✅ Toggle pause state
     },
+    setMovesMenu: (state, action) => {
+      state.movesMenu = action.payload;
+    },
+    setPokemonSelected: (state, action) => {
+      state.pokemonSelected = action.payload;
+    },
     setmap: (state, action) => {
       state.map = action.payload;
     },
@@ -149,6 +175,9 @@ const gameSlice = createSlice({
     },
     setKeyHandler: (state, action) => {
       state.keyHandler = action.payload;
+    },
+    setSecondSelect: (state, action) => {
+      state.secondSelect = action.payload;
     },
     setStarter: (state, action) => {
       state.starter = action.payload;
@@ -258,9 +287,13 @@ const gameSlice = createSlice({
     setTalkingNpc: (state, action) => {
       state.talkingNpc = action.payload; // ✅ Store the NPC being talked to
     },
-    clearTalkingNpc: (state) => {
-      state.talkingNpc = null; // ✅ Reset when conversation ends
+    setTalkingItem: (state, action) => {
+      state.talkingItem = action.payload; // ✅ Store the NPC being talked to
     },
+    setAnimatedNpc: (state, action) => {
+      state.animatedNpc = action.payload; // ✅ Store the NPC being talked to
+    },
+
     setNpcIsWalking: (state, action) => {
       state.npcIsWalking = action.payload; // ✅ Store the NPC being talked to
     },
@@ -272,9 +305,94 @@ const gameSlice = createSlice({
         state.talkingNpc.tileY += dy;
       }
     },
+    setHeal: (state, action) => {
+      const { heal } = action.payload;
+      state.pokemonTeam[state.currentPokemonIndex].hp += heal;
+      if (
+        state.pokemonTeam[state.currentPokemonIndex].hp >
+        state.pokemonTeam[state.currentPokemonIndex].stats.hp
+      )
+        state.pokemonTeam[state.currentPokemonIndex].hp =
+          state.pokemonTeam[state.currentPokemonIndex].stats.hp; // Prevent negative HP
+    },
+    setDemage: (state, action) => {
+      const { demage } = action.payload;
+      state.pokemonTeam[0].hp -= demage;
+      if (state.pokemonTeam[0].hp < 0) state.pokemonTeam[0].hp = 0; // Prevent negative HP
+    },
+    setmovePP: (state, action) => {
+      const { moveIndex, newPP } = action.payload;
+      // Update PP for the selected move in myTeam[0]
+      state.pokemonTeam[0].currentMoves[moveIndex].pp = newPP;
+    },
+    swapPokemonIndex: (state, action) => {
+      const { firstIndex, secondIndex } = action.payload;
+      const team = state.pokemonTeam;
+
+      // ✅ Validate indices
+      if (
+        firstIndex >= 0 &&
+        secondIndex >= 0 &&
+        firstIndex < team.length &&
+        secondIndex < team.length &&
+        firstIndex !== secondIndex
+      ) {
+        const temp = team[firstIndex];
+        team[firstIndex] = team[secondIndex];
+        team[secondIndex] = temp;
+      }
+    },
+    setExp: (state, action) => {
+      state.pokemonTeam[0].exp += action.payload;
+    },
+    setCurrentPokemonIndex: (state, action) => {
+      state.currentPokemonIndex = action.payload;
+    },
+    setCurrentItemIndex: (state, action) => {
+      state.curreItemIndex = action.payload;
+    },
+
+    swapCurrentPokemon: (state) => {
+      const { currentPokemonIndex, pokemonTeam } = state;
+
+      // Ensure there's something to swap and avoid swapping index 0 with itself
+      if (currentPokemonIndex > 0 && currentPokemonIndex < pokemonTeam.length) {
+        [pokemonTeam[0], pokemonTeam[currentPokemonIndex]] = [
+          pokemonTeam[currentPokemonIndex],
+          pokemonTeam[0],
+        ];
+        state.currentPokemonIndex = 0; // Reset selected index after swap
+      }
+    },
+    addItem: (state, action) => {
+      const itemName = action.payload;
+      const existingItem = state.items.find((entry) => entry.item === itemName);
+
+      if (existingItem) {
+        existingItem.x += 1;
+      } else {
+        state.items.push({ item: itemName, x: 1 });
+      }
+    },
+
+    useItem: (state, action) => {
+      const itemName = action.payload;
+      const itemIndex = state.items.findIndex(
+        (entry) => entry.item === itemName
+      );
+
+      if (itemIndex !== -1) {
+        if (state.items[itemIndex].x > 1) {
+          state.items[itemIndex].x -= 1;
+        } else {
+          state.items.splice(itemIndex, 1); // Remove item completely
+        }
+      }
+    },
   },
 });
 export const {
+  setExp,
   setPokemonTeam,
   setPlayerDirection,
   setPlayerWalking,
@@ -311,6 +429,21 @@ export const {
   setGameOver,
   setStepCount,
   synchronizePokemonHp,
+  setDemage,
+  setmovePP,
+  swapCurrentPokemon,
+  setCurrentPokemonIndex,
+  setMovesMenu,
+  setPokemonSelected,
+  setSecondSelect,
+  swapPokemonIndex,
+  setCurrentItemIndex,
+  setHeal,
+  addItem,
+  useItem,
+  setNext,
+  setTalkingItem,
+  setAnimatedNpc,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

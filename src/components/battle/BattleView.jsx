@@ -5,30 +5,47 @@ import FoeSprite from "./FoeSprite";
 import MySprite from "./MySprite";
 import MyHp from "./MyHp";
 import FoeHp from "./FoeHp";
+import playerBack from "../../assets/playerBack.png";
+import BagBattleMenu from "./BagBattleMenu";
+import MySpecialMove from "./MySpecialMove"; // adjust path if needed
+
 import {
   setState,
   setRound,
-  setDemage,
+  setFoeDemage,
   swapFoePokemon,
-  setExp,
-  updatePokemonInBattle,
+  setFoeTeam,
+  setIsIntro,
+  setPlayerFrame,
+  setPokeballFrame,
+  setMoveFrame,
 } from "../../store/battleSlice";
 import {
+  setDemage,
   setBattle,
   setGameOver,
   setMessages,
+  setExp,
+  updatePokemon,
   setPokemonTeam,
+  addPokemon,
+  setKeyHandler,
 } from "../../store/gameSlice";
 import useCalculateDamage from "../../hooks/useCalculateDamage";
 import PokemonBattleMenu from "./PokemonBattleMenu";
 import useLevelUp from "../../hooks/useLevelUp";
+import Player from "../Player";
+import PlayerSprite from "./PlayerSprite";
+import CatchingPokeBall from "./CatchingPokeball";
+import useCatchingAnimation from "../../hooks/useCathingAnimation";
+import FoeSpecialMove from "./FoeSpecialMove";
 
 const BattleView = () => {
   const dispatch = useDispatch();
   const message = useSelector((state) => state.game.message);
   const gameState = useSelector((state) => state.battle.state);
   const round = useSelector((state) => state.battle.round);
-  const myTeam = useSelector((state) => state.battle.myTeam);
+  const myTeam = useSelector((state) => state.game.pokemonTeam);
   const foeTeam = useSelector((state) => state.battle.foeTeam);
   const myAttackMove = useSelector((state) => state.battle.AttackMove);
   const foeAttackMove = useSelector((state) => state.battle.foeAttackMove);
@@ -36,8 +53,8 @@ const BattleView = () => {
   const [mySpritePosition, setMySpritePosition] = useState(0);
   const [foeSpritePosition, setFoeSpritePosition] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
-  const [damage, setDamage] = useState(0);
-
+  const [isPokeball, setIsPokeball] = useState(false);
+  // const [damage, setDamage] = useState(0);
   const mySprite = myTeam[0]?.sprites?.back;
   const foeSprite = foeTeam[0]?.sprites?.front;
 
@@ -48,20 +65,24 @@ const BattleView = () => {
     const myTeamDefeated = myTeam.every((pokemon) => pokemon.hp <= 0);
     const foeTeamDefeated = foeTeam.every((pokemon) => pokemon.hp <= 0);
 
-    if (gameState === "home") return;
+    if (gameState === "home") {
+      return;
+    }
+
     if (myTeamDefeated && message === "") {
       dispatch(setMessages(["You Lost", "Gameover"]));
       dispatch(setBattle(false));
       dispatch(setGameOver(true));
-      dispatch(setState("home"));
-      dispatch(setPokemonTeam(myTeam));
+      dispatch(setState("intro"));
+      dispatch(setFoeTeam([]));
       return;
     }
     if (foeTeamDefeated && message === "") {
       dispatch(setMessages(["You Won!"]));
+      dispatch(setState("intro"));
 
       dispatch(setBattle(false));
-      dispatch(setPokemonTeam(myTeam));
+      dispatch(setFoeTeam([]));
       return;
     }
 
@@ -76,7 +97,7 @@ const BattleView = () => {
       dispatch(setState("foeAttack"));
 
       const damageValue = calculateDamage(foeTeam[0], myTeam[0], foeAttackMove);
-      dispatch(setDemage({ demage: damageValue, myAttack: false }));
+      dispatch(setDemage({ demage: damageValue }));
       dispatch(
         setMessages([
           foeTeam[0].name + " used " + foeAttackMove.name,
@@ -94,12 +115,13 @@ const BattleView = () => {
 
     if (gameState === "battle" && message === "" && round === "0") {
       if (myTeam[0]?.stats?.speed >= foeTeam[0]?.stats?.speed) {
+        console.log(myTeam[0]?.stats?.speed, foeTeam[0]?.stats?.speed);
         const damageValue = calculateDamage(
           myTeam[0],
           foeTeam[0],
           myAttackMove
         );
-        dispatch(setDemage({ demage: damageValue, myAttack: true }));
+        dispatch(setFoeDemage({ demage: damageValue }));
 
         dispatch(setState("myAttack"));
         dispatch(
@@ -123,6 +145,8 @@ const BattleView = () => {
           dispatch(setExp(200));
         }
       } else {
+        console.log(myTeam[0]?.stats?.speed, foeTeam[0]?.stats?.speed);
+
         dispatch(setState("foeAttack"));
 
         dispatch(setRound("1"));
@@ -132,7 +156,7 @@ const BattleView = () => {
           myTeam[0],
           foeAttackMove
         );
-        dispatch(setDemage({ demage: damageValue, myAttack: false }));
+        dispatch(setDemage({ demage: damageValue }));
         dispatch(
           setMessages([
             foeTeam[0].name + " used " + foeAttackMove.name,
@@ -163,7 +187,7 @@ const BattleView = () => {
           foeTeam[0],
           myAttackMove
         );
-        dispatch(setDemage({ demage: damageValue, myAttack: true }));
+        dispatch(setFoeDemage({ demage: damageValue }));
 
         if (foeTeam[0].hp - damageValue <= 0) {
           dispatch(
@@ -192,7 +216,7 @@ const BattleView = () => {
           myTeam[0],
           foeAttackMove
         );
-        dispatch(setDemage({ demage: damageValue, myAttack: false }));
+        dispatch(setDemage({ demage: damageValue }));
         dispatch(
           setMessages([
             foeTeam[0].name + " used " + foeAttackMove.name,
@@ -220,6 +244,96 @@ const BattleView = () => {
     myAttackMove,
     calculateDamage,
   ]);
+  useEffect(() => {
+    const runCatchingAnimation = async () => {
+      // Animate player: 0 → 4
+      for (let i = 0; i < 4; i++) {
+        dispatch(setPlayerFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+      setIsPokeball(true);
+
+      dispatch(setPlayerFrame(4));
+
+      await new Promise((res) => setTimeout(res, 200));
+
+      // Animate Pokéball forward: 0 → 7
+      for (let i = 0; i <= 7; i++) {
+        dispatch(setPokeballFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+
+      // Animate Pokéball backward: 7 → 0
+      for (let i = 7; i >= 0; i--) {
+        dispatch(setPokeballFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+
+      // Second cycle forward
+      for (let i = 0; i <= 7; i++) {
+        dispatch(setPokeballFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+
+      // Third cycle backward
+      for (let i = 7; i >= 0; i--) {
+        dispatch(setPokeballFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+      for (let i = 0; i <= 7; i++) {
+        dispatch(setPokeballFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+
+      // Third cycle backward
+      for (let i = 7; i >= 0; i--) {
+        dispatch(setPokeballFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+
+      const random = Math.floor(Math.random() * 100);
+      if (random > 60) {
+        // Finish
+        dispatch(setPlayerFrame(0));
+        dispatch(setState("battle"));
+        dispatch(setRound("pokemonSwap"));
+        dispatch(setPokeballFrame(0));
+        dispatch(setMessages(["Pokemon broke Free"]));
+        setIsPokeball(false); // Optional reset
+      } else {
+        dispatch(setPokemonTeam(myTeam));
+        dispatch(setPlayerFrame(0));
+        dispatch(setPokeballFrame(0));
+        dispatch(setMessages(["Added " + foeTeam[0].name]));
+        dispatch(addPokemon(foeTeam[0]));
+        dispatch(setState("caught"));
+      }
+    };
+
+    if (gameState === "catching") {
+      runCatchingAnimation();
+    }
+  }, [gameState, dispatch]);
+
+  useEffect(() => {
+    const runIntroAnimation = async () => {
+      // Animate player: 0 → 4
+      for (let i = 0; i < 4; i++) {
+        dispatch(setPlayerFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+      dispatch(setPlayerFrame(4));
+
+      await new Promise((res) => setTimeout(res, 100));
+
+      dispatch(setState("home"));
+      dispatch(setPlayerFrame(0));
+    };
+
+    if (gameState === "introAnimation") {
+      runIntroAnimation();
+    }
+  }, [gameState, dispatch]);
 
   const moveSprites = () => {
     if (isMoving) return;
@@ -242,9 +356,42 @@ const BattleView = () => {
         setFoeSpritePosition((prevPos) => prevPos - moveAmount);
         setIsMoving(false);
         dispatch(setState("battle"));
-      }, 150);
+      }, 200);
     }
   };
+  useEffect(() => {
+    const runMySpecialAnimation = async () => {
+      dispatch(setKeyHandler(""));
+      // Animate player: 0 → 4
+      for (let i = 0; i < 9; i++) {
+        dispatch(setMoveFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+
+      dispatch(setKeyHandler("MessageKeyboardHandler"));
+      dispatch(setMoveFrame(0));
+    };
+
+    if (gameState === "myAttack" && myAttackMove.category === "Special") {
+      runMySpecialAnimation();
+    }
+  }, [gameState, dispatch]);
+  useEffect(() => {
+    const runFoeSpecialAnimation = async () => {
+      dispatch(setKeyHandler(""));
+      // Animate player: 0 → 4
+      for (let i = 0; i < 9; i++) {
+        dispatch(setMoveFrame(i));
+        await new Promise((res) => setTimeout(res, 100));
+      }
+      dispatch(setKeyHandler("MessageKeyboardHandler"));
+      dispatch(setMoveFrame(0));
+    };
+
+    if (gameState === "foeAttack" && foeAttackMove.category === "Special") {
+      runFoeSpecialAnimation();
+    }
+  }, [gameState, dispatch]);
 
   return (
     <div
@@ -259,12 +406,42 @@ const BattleView = () => {
       }}
     >
       {gameState === "pokemonMenu" && <PokemonBattleMenu />}
-
-      <MyHp pokemon={myTeam[0]} move={myAttackMove} damage={damage} />
-      <FoeHp pokemon={foeTeam[0]} move={foeAttackMove} />
-      {mySprite && <MySprite sprite={mySprite} position={mySpritePosition} />}
-      {foeSprite && (
-        <FoeSprite sprite={foeSprite} position={foeSpritePosition} />
+      {gameState === "bag" && <BagBattleMenu />}
+      {gameState === "intro" ||
+      gameState === "introAnimation" ||
+      gameState === "catching" ||
+      gameState === "caught" ? (
+        <>
+          <CatchingPokeBall isPokeball={isPokeball} />
+          <PlayerSprite />
+          {foeSprite && (
+            <FoeSprite
+              sprite={foeSprite}
+              position={foeSpritePosition}
+              isPokeball={isPokeball}
+            />
+          )}
+        </>
+      ) : (
+        <>
+          <MyHp pokemon={myTeam[0]} move={myAttackMove} />
+          <FoeHp pokemon={foeTeam[0] || playerBack} move={foeAttackMove} />
+          {mySprite && (
+            <MySprite sprite={mySprite} position={mySpritePosition} />
+          )}
+          {foeSprite && (
+            <FoeSprite
+              sprite={foeSprite}
+              position={foeSpritePosition}
+              isPokeball={isPokeball}
+            />
+          )}
+          {gameState === "myAttack" && myAttackMove.category === "Special" && (
+            <MySpecialMove />
+          )}
+          {gameState === "foeAttack" &&
+            foeAttackMove.category === "Special" && <FoeSpecialMove />}
+        </>
       )}
     </div>
   );

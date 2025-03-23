@@ -13,6 +13,7 @@ export const Cid = {
   sprite: cidSprite,
   direction: 0,
   walks: false,
+  messages: ["hi", "im Cid"],
 };
 export const Cloud = {
   character: "Cloud",
@@ -38,6 +39,7 @@ export const Auron2 = {
   ovmap: "overworldmap1",
   sprite: vincentSripte,
   direction: 1,
+  messages: ["hi", "im Vincent"],
 };
 export const Auron3 = {
   character: "Auron3",
@@ -46,6 +48,7 @@ export const Auron3 = {
   ovmap: "overworldmap1",
   sprite: squallSprite,
   direction: 0,
+  messages: ["hi", "im Squall"],
 };
 
 export const Moogle1 = {

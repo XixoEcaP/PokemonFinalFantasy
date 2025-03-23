@@ -8,8 +8,8 @@ const Move1 = ({ isSelected, move, sprite }) => {
         height: "46px",
         background: `url(${sprite}) no-repeat center/contain`, // Dynamically set the sprite
         position: "absolute",
-        top: 0,
-        left: 0,
+        top: 1,
+        left: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-start",

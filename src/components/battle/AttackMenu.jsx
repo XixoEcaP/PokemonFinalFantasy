@@ -6,7 +6,8 @@ import Move2 from "./AttackMenu/Move2";
 import Move3 from "./AttackMenu/Move3";
 import Move4 from "./AttackMenu/Move4";
 import MoveInfo from "./AttackMenu/MoveInfo";
-import { setState, setAttackMove, setmovePP } from "../../store/battleSlice";
+import { setState, setAttackMove } from "../../store/battleSlice";
+import { setmovePP } from "../../store/gameSlice";
 
 // Import different sprites for each move type
 import bugSprite from "../../assets/movebattle/bug.png";
@@ -49,7 +50,7 @@ const moveTypeToSprite = {
 
 const AttackMenu = () => {
   const dispatch = useDispatch();
-  const myTeam = useSelector((state) => state.battle.myTeam); // Access myTeam from Redux store
+  const myTeam = useSelector((state) => state.game.pokemonTeam); // Access myTeam from Redux store
   const AttackMove = useSelector((state) => state.battle.AttackMove); // Access myTeam from Redux store
 
   const selectedMove = useSelector((state) => state.battle.AttackMove);

@@ -9,7 +9,7 @@ const Move3 = ({ isSelected, move, sprite }) => {
         background: `url(${sprite}) no-repeat center/contain`,
 
         position: "absolute",
-        top: 0,
+        top: 1,
         right: "132px",
         display: "flex",
         alignItems: "center",

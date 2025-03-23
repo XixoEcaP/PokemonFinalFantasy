@@ -10,7 +10,7 @@ const Move4 = ({ isSelected, move, sprite }) => {
         background: `url(${sprite}) no-repeat center/contain`,
 
         position: "absolute",
-        bottom: 0,
+        bottom: 1,
         right: "132px",
         display: "flex",
         alignItems: "center",

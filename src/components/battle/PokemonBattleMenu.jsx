@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import pauseMenuBg from "../../assets/pausemenu.png";
-import {
-  setState,
-  setRound,
+import { setState, setRound } from "../../store/battleSlice";
+import gameSlice, {
+  setMessages,
   swapCurrentPokemon,
   setCurrentPokemonIndex,
-} from "../../store/battleSlice";
-import { setMessages } from "../../store/gameSlice";
+  setHeal,
+} from "../../store/gameSlice";
 
 const PokemonBattleMenu = () => {
-  const myTeam = useSelector((state) => state.battle.myTeam);
+  const myTeam = useSelector((state) => state.game.pokemonTeam);
   const dispatch = useDispatch();
   const keyHandler = useSelector((state) => state.game.keyHandler);
+  const gameState = useSelector((state) => state.battle.state);
 
   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(0);
 
@@ -33,6 +34,20 @@ const PokemonBattleMenu = () => {
     } else if (e.key === "ArrowDown") {
       setSelectedPokemonIndex((prev) => (prev + 1) % myTeam.length);
     } else if (e.key === "x") {
+      if (gameState === "bag") {
+        dispatch(setHeal({ heal: 20 }));
+        dispatch(
+          setMessages([
+            "Potion used",
+            myTeam[selectedPokemonIndex].name + " healed",
+          ])
+        );
+        dispatch(useItem("Potion"));
+
+        dispatch(setRound("pokemonSwap"));
+        dispatch(setState("battle"));
+        return;
+      }
       if (myTeam[selectedPokemonIndex].hp <= 0) {
         dispatch(setMessages(["New Pokemon dead"]));
         return;
@@ -51,7 +66,7 @@ const PokemonBattleMenu = () => {
           dispatch(setState("home"));
         }
       }
-    } else if (e.key === "z" && myTeam[0].hp > 0) {
+    } else if (e.key === "z" && gameState !== "bag" && myTeam[0].hp > 0) {
       dispatch(setState("home"));
     }
   };
@@ -59,7 +74,7 @@ const PokemonBattleMenu = () => {
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedPokemonIndex, myTeam, keyHandler]);
+  }, [selectedPokemonIndex, myTeam, keyHandler, gameState]);
 
   return (
     <div

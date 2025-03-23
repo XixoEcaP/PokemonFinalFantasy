@@ -1,8 +1,7 @@
 import React from "react";
 
-const FoeSprite = ({ sprite, position }) => {
-  if (!sprite) {
-    console.error("Sprite not available for FoeSprite"); // Log error if sprite is missing
+const FoeSprite = ({ sprite, position, isPokeball }) => {
+  if (!sprite || isPokeball) {
     return null; // Fallback if sprite data is not available
   }
 

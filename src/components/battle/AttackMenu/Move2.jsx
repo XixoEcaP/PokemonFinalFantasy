@@ -9,8 +9,8 @@ const Move2 = ({ isSelected, move, sprite }) => {
         height: "46px",
         background: `url(${sprite}) no-repeat center/contain`,
         position: "absolute",
-        bottom: 0, // Adjust positioning for Move2
-        left: 0,
+        bottom: 1, // Adjust positioning for Move2
+        left: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-start",

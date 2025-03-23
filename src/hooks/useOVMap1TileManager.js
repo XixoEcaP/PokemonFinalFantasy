@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { OverworldMap1Tiles2 } from "../data/mapChunks";
 import { Auron, Auron2, Auron3 } from "../data/characters";
 import useCreatePokemon from "./useCreatePokemon";
-import { setMyTeam } from "../store/battleSlice";
+import { setAnimatedNpc, setPokemonTeam } from "../store/gameSlice";
 import {
   setmap,
   setCurrentTileSet,
@@ -38,6 +38,8 @@ export default function useOVMap1TileManager() {
   const battle = useSelector((state) => state.game.battle);
   const [newMap, setNewMap] = useState(currentMap);
   const talkingNpc = useSelector((state) => state.game.talkingNpc);
+  const animatedNpc = useSelector((state) => state.game.animatedNpc);
+
   const pokemonTeam = useSelector((state) => state.game.pokemonTeam);
   const trainer1 = useSelector((state) => state.game.events.trainer1);
   const trainer2 = useSelector((state) => state.game.events.trainer2);
@@ -54,26 +56,26 @@ export default function useOVMap1TileManager() {
       tileX === Auron3.tileX &&
       tileY < Auron3.tileY + 5 &&
       tileY > Auron3.tileY &&
-      talkingNpc === "" &&
+      animatedNpc === "" &&
       !battle &&
       !gameOver &&
       message === "" &&
       !trainer2
     ) {
-      dispatch(setTalkingNpc("Auron3"));
+      dispatch(setAnimatedNpc("Auron3"));
 
       dispatch(setMessages(["wooo", "lets Go", "Battling Squall"]));
       dispatch(setWalkingSteps(tileY - Auron3.tileY - 1));
       dispatch(setNpcIsWalking(true));
       dispatch(setWalkingDirection(Auron3.direction));
-      dispatch(setMyTeam(pokemonTeam));
+      dispatch(setPokemonTeam(pokemonTeam));
     }
 
     if (
       tileX === Auron3.tileX &&
       tileY < Auron3.tileY + 5 &&
       tileY > Auron3.tileY &&
-      talkingNpc === "Auron3" &&
+      animatedNpc === "Auron3" &&
       message === "Battling Squall" &&
       !trainer2
     ) {
@@ -88,7 +90,7 @@ export default function useOVMap1TileManager() {
       dispatch(setFoeTeam(foeTeam));
 
       dispatch(setBattle(true));
-      dispatch(setTalkingNpc(""));
+      dispatch(setAnimatedNpc(""));
       dispatch(setWalkingSteps(0));
       dispatch(setEvent("trainer2"));
 
@@ -99,17 +101,16 @@ export default function useOVMap1TileManager() {
       tileY === Auron2.tileY &&
       tileX > Auron2.tileX - 7 &&
       tileX < Auron2.tileX &&
-      talkingNpc === "" &&
+      animatedNpc === "" &&
       !battle &&
       !gameOver &&
       message === "" &&
       !trainer1
     ) {
-      dispatch(setTalkingNpc("Auron2"));
+      dispatch(setAnimatedNpc("Auron2"));
 
       dispatch(setMessages(["wooo", "lets Go", "Battling Vincent"]));
       dispatch(setWalkingDirection(Auron2.direction));
-      dispatch(setMyTeam(pokemonTeam));
 
       dispatch(setWalkingSteps(Auron2.tileX - tileX - 1));
       dispatch(setNpcIsWalking(true));
@@ -119,7 +120,7 @@ export default function useOVMap1TileManager() {
       tileY === Auron2.tileY &&
       tileX > Auron2.tileX - 7 &&
       tileX < Auron2.tileX &&
-      talkingNpc === "Auron2" &&
+      animatedNpc === "Auron2" &&
       message === "Battling Vincent" &&
       !trainer1
     ) {
@@ -130,7 +131,7 @@ export default function useOVMap1TileManager() {
         createPokemon(pokemons.OneEye, 3),
       ];
       dispatch(setOvmapTiles(OverworldMap1Tiles2));
-      dispatch(setTalkingNpc(""));
+      dispatch(setAnimatedNpc(""));
       dispatch(setNpcIsWalking(false));
       dispatch(setWalkingSteps(0));
 
@@ -141,5 +142,5 @@ export default function useOVMap1TileManager() {
 
       dispatch(setBattle(true));
     }
-  }, [tileX, tileY, currentMap, message, talkingNpc, gameOver, battle]);
+  }, [tileX, tileY, currentMap, message, animatedNpc, gameOver, battle]);
 }

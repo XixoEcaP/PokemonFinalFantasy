@@ -18,11 +18,10 @@ const useCreatePokemon = () => {
     const specialAttack = calculateStats(pokemon.specialAttack, level, false);
     const specialDefense = calculateStats(pokemon.specialDefense, level, false);
     const speed = calculateStats(pokemon.speed, level, false);
-    const id = uuidv4();
     const maxExp = getPokemonMaxExp(level); // ✅ Call function, NOT a hook
 
     return {
-      id: id,
+      id: null,
       name: name || pokemon.specie,
       specie: pokemon.specie,
       type: pokemon.type,

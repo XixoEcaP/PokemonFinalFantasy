@@ -8,8 +8,11 @@ import {
   setPause,
   setKeyHandler,
   setShowBooleanBox,
+  setPokemonSelected,
+  setMovesMenu,
+  setSecondSelect,
 } from "../store/gameSlice"; // ✅ Import pause action
-
+import useSaveLoadGame from "../hooks/useSaveLoadGame";
 export const PauseMenu = ({
   team,
   items,
@@ -19,13 +22,20 @@ export const PauseMenu = ({
   currentPokemonIndex,
 }) => {
   const dispatch = useDispatch();
+  const pokemonSelected = useSelector((state) => state.game.pokemonSelected); // ✅ Get pause state
+  const secondSelect = useSelector((state) => state.game.secondSelect);
+  const movesMenu = useSelector((state) => state.game.movesMenu);
+
   const isPaused = useSelector((state) => state.game.isPaused); // ✅ Get pause state
-  const menuOptions = ["Pokedex", "Pokemon", "Bag", "Save", "Exit"];
+  const menuOptions = ["Pokedex", "Pokemon", "Bag", "Save", "Load", "Exit"];
   const [selectedOption, setSelectedOption] = useState(0);
   const [showPokemonMenu, setShowPokemonMenu] = useState(false);
   const [showBagMenu, setShowBagMenu] = useState(false);
   const [selectedBagItem, setSelectedBagItem] = useState(0);
   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(0);
+  const [currentMessage, setCurrentMessage] = useState("Paused Menu");
+
+  const { saveGame, loadGame } = useSaveLoadGame();
 
   const handleKeyDown = (e) => {
     if (!isPaused) return;
@@ -49,24 +59,46 @@ export const PauseMenu = ({
           dispatch(setKeyHandler("WorldKeyboardHandler")); // ✅ Close menu
         } else if (menuOptions[selectedOption] === "Pokemon") {
           setShowPokemonMenu(true);
+          dispatch(setMessages([""])); // ✅ Close menu
         } else if (menuOptions[selectedOption] === "Bag") {
           setShowBagMenu(true);
+        } else if (menuOptions[selectedOption] === "Save") {
+          saveGame();
+          dispatch(setMessages(["Gamesaved"])); // ✅ Close menu
+        } else if (menuOptions[selectedOption] === "Load") {
+          loadGame();
+          dispatch(setMessages(["Gameload"])); // ✅ Close menu
         }
       }
-    } else if (showPokemonMenu && e.key === "z") {
-      setShowPokemonMenu(false);
+    } else if (movesMenu && e.key === "z") {
+      dispatch(setMovesMenu(false));
+      dispatch(setPokemonSelected(true));
+    } else if (secondSelect && e.key === "z") {
+      dispatch(setSecondSelect(false));
+    } else if (pokemonSelected && e.key === "z") {
+      dispatch(setPokemonSelected(false));
     } else if (showBagMenu && e.key === "z") {
       setShowBagMenu(false);
+    } else if (showPokemonMenu && e.key === "z") {
+      setShowPokemonMenu(false);
     }
   };
 
   useEffect(() => {
     if (isPaused) {
-      dispatch(setMessages(["Paused Menu"])); // ✅ Close menu
+      dispatch(setMessages([currentMessage])); // ✅ Close menu
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPaused, selectedOption, showPokemonMenu, showBagMenu]);
+  }, [
+    isPaused,
+    selectedOption,
+    showPokemonMenu,
+    showBagMenu,
+    pokemonSelected,
+    secondSelect,
+    movesMenu,
+  ]);
 
   if (!isPaused) return null; // ✅ Hide if not paused
 
@@ -107,24 +139,11 @@ export const PauseMenu = ({
         </ul>
       ) : showPokemonMenu ? (
         <span style={{ marginLeft: "20px" }}>
-          <PokemonMenu
-            setShowPokemonMenu={setShowPokemonMenu}
-            team={team}
-            selectedPokemonIndex={selectedPokemonIndex}
-            setSelectedPokemonIndex={setSelectedPokemonIndex}
-            setTeam={setTeam}
-            setCurrentPokemonIndex={setCurrentPokemonIndex}
-            currentPokemonIndex={currentPokemonIndex}
-            fromBattleCanvas={false}
-          />
+          <PokemonMenu />
         </span>
       ) : (
         <span style={{ marginLeft: "20px" }}>
-          <BagMenu
-            items={items}
-            selectedBagItem={selectedBagItem}
-            setSelectedBagItem={setSelectedBagItem}
-          />
+          <BagMenu />
         </span>
       )}
     </div>

@@ -18,10 +18,11 @@ const MoveInfo = ({ move, movePP }) => {
           fontSize: "13px",
         }}
       >
-        <div>
-          <p>Type: {move.type}</p>
-          <p>PP: {movePP}</p>
-          <p>{move.category}</p>
+        <div style={{ margin: "1px 0" }}>
+          <p style={{ margin: "1px 0" }}>Type: {move.type}</p>
+          <p style={{ margin: "1px 0" }}>PP: {movePP}</p>
+          <p style={{ margin: "1px 0" }}>Power: {move.power}</p>
+          <p style={{ margin: "1px 0" }}>{move.category}</p>
         </div>
       </div>
     </>

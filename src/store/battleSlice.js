@@ -17,20 +17,15 @@ const pokemonList = [
 
 const initialState = {
   swapped: false,
-  state: "home",
-  myTeam: [
-    pokemonList[0],
-    pokemonList[3],
-    pokemonList[4],
-    pokemonList[5],
-    pokemonList[6],
-  ], // Ensure myTeam has at least one Pokémon
+  state: "intro",
+  playerFrame: 0,
+  pokeballFrame: 0,
+  moveFrame: 0,
   foeTeam: [pokemonList[2], pokemonList[1], pokemonList[7], pokemonList[8]],
   AttackMove: pokemonList[2].currentMoves[0],
   foeAttackMove: pokemonList[2].currentMoves[0],
   round: "0",
   demage: "0",
-  currentPokemonIndex: 0,
 };
 
 const gameSlice = createSlice({
@@ -40,17 +35,8 @@ const gameSlice = createSlice({
     setState: (state, action) => {
       state.state = action.payload;
     },
-    swapCurrentPokemon: (state) => {
-      const { currentPokemonIndex, myTeam } = state;
-
-      // Ensure there's something to swap and avoid swapping index 0 with itself
-      if (currentPokemonIndex > 0 && currentPokemonIndex < myTeam.length) {
-        [myTeam[0], myTeam[currentPokemonIndex]] = [
-          myTeam[currentPokemonIndex],
-          myTeam[0],
-        ];
-        state.currentPokemonIndex = 0; // Reset selected index after swap
-      }
+    setIsIntro: (state, action) => {
+      state.isIntro = action.payload;
     },
     setSwapped: (state, action) => {
       state.swapped = action.payload;
@@ -75,69 +61,50 @@ const gameSlice = createSlice({
     setFoeAttackMove: (state, action) => {
       state.foeAttackMove = action.payload;
     },
-    setCurrentPokemonIndex: (state, action) => {
-      state.currentPokemonIndex = action.payload;
-    },
 
-    setDemage: (state, action) => {
-      const { demage, myAttack } = action.payload;
+    setFoeDemage: (state, action) => {
+      const { demage } = action.payload;
       state.demage = demage;
 
-      if (myAttack) {
-        state.foeTeam[0].hp -= demage;
-        console.log("babe");
-        if (state.foeTeam[0].hp < 0) state.foeTeam[0].hp = 0; // Prevent negative HP
-      } else {
-        state.myTeam[0].hp -= demage;
-        if (state.myTeam[0].hp < 0) state.myTeam[0].hp = 0; // Prevent negative HP
-      }
+      state.foeTeam[0].hp -= demage;
+      if (state.foeTeam[0].hp < 0) state.foeTeam[0].hp = 0; // Prevent negative HP
     },
     setRound: (state, action) => {
       state.round = action.payload;
     },
-    setmovePP: (state, action) => {
-      const { moveIndex, newPP } = action.payload;
-      // Update PP for the selected move in myTeam[0]
-      state.myTeam[0].currentMoves[moveIndex].pp = newPP;
-    },
+
     setAttackMove: (state, action) => {
       state.AttackMove = action.payload;
     },
-    setMyTeam: (state, action) => {
-      state.myTeam = action.payload;
-    },
+
     setFoeTeam: (state, action) => {
       state.foeTeam = action.payload;
     },
-    setExp: (state, action) => {
-      state.myTeam[0].exp += action.payload;
+    setPlayerFrame: (state, action) => {
+      state.playerFrame = action.payload;
     },
-    updatePokemonInBattle: (state, action) => {
-      const { id, updatedPokemon } = action.payload;
-
-      // Update Pokémon in the team immutably
-      state.myTeam = state.myTeam.map((pokemon) =>
-        pokemon.id === id ? { ...updatedPokemon } : pokemon
-      );
+    setPokeballFrame: (state, action) => {
+      state.pokeballFrame = action.payload;
+    },
+    setMoveFrame: (state, action) => {
+      state.moveFrame = action.payload;
     },
   },
 });
 
 export const {
-  setMyTeam,
   setFoeTeam,
   setState,
   setAttackMove,
-  setmovePP,
   setRound,
   setFoeAttackMove,
-  setDemage,
+  setFoeDemage,
   setCurrentPokemonIndex,
-  swapCurrentPokemon,
   swapFoePokemon,
   setSwapped,
-  updatePokemonInBattle,
-  setExp,
+  setPlayerFrame,
+  setPokeballFrame,
+  setMoveFrame,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

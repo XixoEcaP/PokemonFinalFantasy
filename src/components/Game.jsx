@@ -9,9 +9,10 @@ import PauseMenu from "./PauseMenu";
 import { setItems, setPokemonTeam } from "../store/gameSlice";
 import useWroldKeyHandler from "./KeyHandler";
 import Battle from "./Battle";
+import SelectedPokemon from "./SelectedPokemon";
+import MovesMenu from "./MovesMenu";
 
 function Game() {
-  const dispatch = useDispatch;
   useMessageHandler();
   useWroldKeyHandler();
 
@@ -20,6 +21,9 @@ function Game() {
   const team = useSelector((state) => state.game.pokemonTeam);
   const items = useSelector((state) => state.game.items);
   const battle = useSelector((state) => state.game.battle);
+  const movesMenu = useSelector((state) => state.game.movesMenu);
+  const pokemonSelected = useSelector((state) => state.game.pokemonSelected);
+  console.log(pokemonSelected);
 
   return (
     <div
@@ -44,6 +48,8 @@ function Game() {
       {battle && <Battle />}
       {message && <MessageBox />}
       {booleanBox && <BooleanBox />}
+      {movesMenu && <MovesMenu />}
+      {pokemonSelected && <SelectedPokemon />}
     </div>
   );
 }

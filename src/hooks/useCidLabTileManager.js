@@ -21,6 +21,7 @@ import {
   setBattle,
   setWalkingSteps,
   setStepCount,
+  setAnimatedNpc,
 } from "../store/gameSlice";
 import {
   CidLabTiles,
@@ -32,7 +33,8 @@ import { leviaball, ramball, ifuritoball, pokeball1 } from "../data/items";
 import pokemons from "../data/pokemonData";
 import useCreatePokemon from "../hooks/useCreatePokemon";
 import useLevelUp from "../hooks/useLevelUp";
-import { setFoeTeam, setMyTeam } from "../store/battleSlice";
+import { setFoeTeam } from "../store/battleSlice";
+import { setPokemonTeam } from "../store/gameSlice";
 
 export default function useCidLabTileManager() {
   const dispatch = useDispatch();
@@ -50,6 +52,9 @@ export default function useCidLabTileManager() {
   const { levelUp } = useLevelUp();
   const pokemonTeam = useSelector((state) => state.game.pokemonTeam);
   const talkingNpc = useSelector((state) => state.game.talkingNpc);
+  const talkingItem = useSelector((state) => state.game.talkingItem);
+  const animatedNpc = useSelector((state) => state.game.animatedNpc);
+
   const battle = useSelector((state) => state.game.battle);
   const booleanChoice = useSelector((state) => state.game.booleanChoice);
 
@@ -60,7 +65,7 @@ export default function useCidLabTileManager() {
       if (
         message === "" &&
         (events.leviaball || events.ramball || events.ifuritoball) &&
-        talkingNpc === "Cloud"
+        animatedNpc === "Cloud"
       ) {
         if (events.leviaball) {
           const foeTeam = createPokemon(pokemons.Ramuh, 5);
@@ -72,7 +77,7 @@ export default function useCidLabTileManager() {
           const foeTeam = createPokemon(pokemons.Leviathan, 5);
           dispatch(setFoeTeam([foeTeam]));
         }
-        dispatch(setMyTeam(pokemonTeam));
+        dispatch(setPokemonTeam(pokemonTeam));
 
         dispatch(setNpcIsWalking(false));
         dispatch(
@@ -110,6 +115,7 @@ export default function useCidLabTileManager() {
         dispatch(setOvmapTiles(CidLabTiles));
         dispatch(setBattle(true));
         dispatch(setTalkingNpc(""));
+        dispatch(setAnimatedNpc(""));
       }
 
       if (booleanChoice === true) {
@@ -117,26 +123,26 @@ export default function useCidLabTileManager() {
           dispatch(setMessages(["HOLA"]));
         }
 
-        if (talkingNpc === "leviaball") {
+        if (talkingItem === "leviaball") {
           const newLevia = createPokemon(pokemons.Leviathan, 5);
           dispatch(addPokemon(newLevia));
           dispatch(setMessages(["You choose " + newLevia.specie]));
           dispatch(setEvent("leviaball"));
-          dispatch(setTalkingNpc("Cloud"));
+          dispatch(setAnimatedNpc("Cloud"));
         }
-        if (talkingNpc === "ramball") {
+        if (talkingItem === "ramball") {
           const newRam = createPokemon(pokemons.Ramuh, 5);
           dispatch(addPokemon(newRam));
           dispatch(setMessages(["You choose " + newRam.specie]));
           dispatch(setEvent("ramball"));
-          dispatch(setTalkingNpc("Cloud"));
+          dispatch(setAnimatedNpc("Cloud"));
         }
-        if (talkingNpc === "ifuritoball") {
+        if (talkingItem === "ifuritoball") {
           const newIfurito = createPokemon(pokemons.Ifrit, 5);
           dispatch(addPokemon(newIfurito));
           dispatch(setMessages(["You choose " + newIfurito.specie]));
           dispatch(setEvent("ifuritoball"));
-          dispatch(setTalkingNpc("Cloud"));
+          dispatch(setAnimatedNpc("Cloud"));
         }
 
         dispatch(setBooleanChoice(null));
@@ -156,5 +162,6 @@ export default function useCidLabTileManager() {
     pokemonTeam,
     walkingSteps,
     stepCount,
+    createPokemon,
   ]);
 }

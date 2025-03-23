@@ -5,6 +5,7 @@ import {
   setRound,
   setSwapped,
   setFoeAttackMove,
+  setFoeTeam,
 } from "../../store/battleSlice";
 import {
   addPokemon,
@@ -24,7 +25,7 @@ const SelectMenu = () => {
   const gameState = useSelector((state) => state.battle.state);
   const swapped = useSelector((state) => state.battle.swapped);
   const foeTeam = useSelector((state) => state.battle.foeTeam);
-  const myTeam = useSelector((state) => state.battle.myTeam);
+  const myTeam = useSelector((state) => state.game.pokemonTeam);
 
   const chooseFoeMove = useFoeMoveSelection(foeTeam[0]);
   const keyHandlerG = useSelector((state) => state.game.keyHandler);
@@ -75,17 +76,15 @@ const SelectMenu = () => {
       dispatch(setState("pokemonMenu"));
     } else if (selectedOption === 1) {
       console.log("Bag selected");
-      dispatch(setPokemonTeam(myTeam));
-
-      dispatch(setMessages(["Added " + foeTeam[0].name]));
-      dispatch(addPokemon(foeTeam[0]));
-      dispatch(setBattle(false));
+      dispatch(setState("bag"));
     } else if (selectedOption === 2) {
       console.log("Fight selected");
       dispatch(setState("fight"));
     } else if (selectedOption === 3) {
       console.log("Run selected");
-      dispatch(setState("home"));
+      dispatch(setFoeTeam([]));
+      dispatch(setState("intro"));
+
       dispatch(setBattle(false));
     }
   };

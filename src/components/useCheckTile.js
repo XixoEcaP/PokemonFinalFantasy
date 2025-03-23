@@ -20,6 +20,8 @@ import {
   setWalkingDirection,
   setBattle,
   setWalkingSteps,
+  setNext,
+  setTalkingItem,
 } from "../store/gameSlice";
 import {
   CidLabTiles,
@@ -31,7 +33,6 @@ import { leviaball, ramball, ifuritoball, pokeball1 } from "../data/items";
 import pokemons from "../data/pokemonData";
 import useCreatePokemon from "../hooks/useCreatePokemon";
 import useLevelUp from "../hooks/useLevelUp";
-import { setFoeTeam, setMyTeam } from "../store/battleSlice";
 
 export default function useCheckTile() {
   const dispatch = useDispatch();
@@ -47,13 +48,10 @@ export default function useCheckTile() {
   const { levelUp } = useLevelUp();
   const pokemonTeam = useSelector((state) => state.game.pokemonTeam);
   const talkingNpc = useSelector((state) => state.game.talkingNpc);
-  const battle = useSelector((state) => state.game.battle);
 
   const messages = useSelector((state) => state.game.messages);
 
   const booleanChoice = useSelector((state) => state.game.booleanChoice);
-  const [NextX, setNextX] = useState("0");
-  const [NextY, setNextY] = useState("0");
 
   const checkTile = () => {
     let nextX = tileX;
@@ -75,16 +73,9 @@ export default function useCheckTile() {
       default:
         break;
     }
+    dispatch(setNext({ nextX: nextX, nextY: nextY }));
 
-    if (
-      tiles &&
-      nextY >= 0 &&
-      nextY < tiles.length &&
-      nextX >= 0 &&
-      nextX < tiles[0].length
-    ) {
-      setNextX(nextX);
-      setNextY(nextY);
+    {
       const nextTile = tiles[nextY][nextX];
       console.log("Player stepping on:", nextX, nextY, nextTile);
 
@@ -145,22 +136,6 @@ export default function useCheckTile() {
         dispatch(setTalkingNpc("Auron"));
       }
 
-      // ✅ NPC Event: Cid's Boolean Choice
-      if (nextX === Cid.tileX && nextY === Cid.tileY && map === "cidlab") {
-        if (booleanChoice === null) {
-          const oldPokmeon = pokemonTeam[0];
-
-          const newPokemon = levelUp(oldPokmeon);
-          console.log(newPokemon);
-          dispatch(
-            updatePokemon({ id: oldPokmeon.id, updatedPokemon: newPokemon })
-          );
-          dispatch(setShowBooleanBox(true));
-          dispatch(setMessages(["Hi", "Are You Good?", "Yes or No?"]));
-          dispatch(setTalkingNpc("Cid"));
-        }
-      }
-
       // ✅ Pokémon Event: Collect Levia
       if (
         nextX === leviaball.tileX &&
@@ -170,7 +145,7 @@ export default function useCheckTile() {
         !events.ramball &&
         !events.ifuritoball
       ) {
-        dispatch(setTalkingNpc("leviaball"));
+        dispatch(setTalkingItem("leviaball"));
 
         dispatch(setShowBooleanBox(true));
         dispatch(
@@ -190,7 +165,7 @@ export default function useCheckTile() {
         !events.ramball &&
         !events.ifuritoball
       ) {
-        dispatch(setTalkingNpc("ramball"));
+        dispatch(setTalkingItem("ramball"));
 
         dispatch(setShowBooleanBox(true));
         dispatch(
@@ -218,7 +193,7 @@ export default function useCheckTile() {
         !events.ramball &&
         !events.ifuritoball
       ) {
-        dispatch(setTalkingNpc("ifuritoball"));
+        dispatch(setTalkingItem("ifuritoball"));
 
         dispatch(setShowBooleanBox(true));
         dispatch(

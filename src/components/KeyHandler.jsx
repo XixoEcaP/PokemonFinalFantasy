@@ -45,12 +45,13 @@ export default function useWorldKeyHandler() {
       }
 
       if (e.key.toLowerCase() === "x") {
-        if (map === "map3" || map === "cidlab") checkTile();
+        if (map === "map3" || map === "map2" || map === "cidlab") checkTile();
         return;
       }
 
       if (
-        !["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)
+        !["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key) ||
+        isPaused
       ) {
         return;
       }

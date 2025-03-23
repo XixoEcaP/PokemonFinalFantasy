@@ -14,8 +14,9 @@ import {
   setBattle,
   synchronizePokemonHp,
   setTalkingNpc,
+  setPokemonTeam,
 } from "../store/gameSlice";
-import { setFoeTeam, setMyTeam } from "../store/battleSlice";
+import { setFoeTeam } from "../store/battleSlice";
 import useGetFoePokemon from "../hooks/useGetFoePokemon";
 
 export default function useTileManager() {
@@ -30,6 +31,11 @@ export default function useTileManager() {
   const battle = useSelector((state) => state.game.battle);
   const pokemonTeam = useSelector((state) => state.game.pokemonTeam);
   const npcIsWalking = useSelector((state) => state.game.npcIsWalking);
+  const animatedNpc = useSelector((state) => state.game.animatedNpc);
+
+  const talkingNpc = useSelector((state) => state.game.talkingNpc);
+  const isPaused = useSelector((state) => state.game.isPaused);
+  const foeTeam = useSelector((state) => state.battle.foeTeam);
 
   const [newMap, setNewMap] = useState(currentMap);
   const getFoePokemon = useGetFoePokemon();
@@ -51,8 +57,17 @@ export default function useTileManager() {
       // ✅ Battle logic (Only calls function inside useEffect)
       const random = Math.floor(Math.random() * 100);
 
-      if (updatedTileSet === 2 && !battle && !npcIsWalking && random > 93) {
-        dispatch(setMyTeam(pokemonTeam));
+      if (
+        updatedTileSet === 2 &&
+        !battle &&
+        !npcIsWalking &&
+        foeTeam.length == [] &&
+        random > 95 &&
+        talkingNpc === "" &&
+        !isPaused &&
+        animatedNpc === ""
+      ) {
+        dispatch(setPokemonTeam(pokemonTeam));
 
         const foePokemon = getFoePokemon(); // Now this function is stable and won't cause re-renders
         if (foePokemon) {
@@ -60,10 +75,6 @@ export default function useTileManager() {
           dispatch(setFoeTeam([foePokemon]));
           dispatch(setBattle(true));
         }
-      }
-    } else {
-      if (currentTileSet !== 0) {
-        dispatch(setCurrentTileSet(0));
       }
     }
     if (gameOver) {
@@ -95,6 +106,11 @@ export default function useTileManager() {
     message,
     getFoePokemon,
     npcIsWalking,
+    foeTeam,
+    battle,
+    talkingNpc,
+    isPaused,
+    animatedNpc,
     // ✅ Now stable due to useCallback
   ]);
 }
