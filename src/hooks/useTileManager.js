@@ -15,8 +15,11 @@ import {
   synchronizePokemonHp,
   setTalkingNpc,
   setPokemonTeam,
+  setNext,
+  setBattleNpc,
+  setAnimatedNpc,
 } from "../store/gameSlice";
-import { setFoeTeam } from "../store/battleSlice";
+import { setFoeTeam, setState } from "../store/battleSlice";
 import useGetFoePokemon from "../hooks/useGetFoePokemon";
 
 export default function useTileManager() {
@@ -32,6 +35,7 @@ export default function useTileManager() {
   const pokemonTeam = useSelector((state) => state.game.pokemonTeam);
   const npcIsWalking = useSelector((state) => state.game.npcIsWalking);
   const animatedNpc = useSelector((state) => state.game.animatedNpc);
+  const playerIsWalking = useSelector((state) => state.game.player.isWalking);
 
   const talkingNpc = useSelector((state) => state.game.talkingNpc);
   const isPaused = useSelector((state) => state.game.isPaused);
@@ -65,7 +69,8 @@ export default function useTileManager() {
         random > 95 &&
         talkingNpc === "" &&
         !isPaused &&
-        animatedNpc === ""
+        animatedNpc === "" &&
+        playerIsWalking
       ) {
         dispatch(setPokemonTeam(pokemonTeam));
 
@@ -88,11 +93,16 @@ export default function useTileManager() {
           ovTiles: OverworldMap1Tiles2,
         })
       );
+
       dispatch(synchronizePokemonHp());
       dispatch(setTalkingNpc(""));
-
+      dispatch(setNext({ nextX: 0, nextY: 0 }));
+      dispatch(setBattleNpc(""));
+      dispatch(setAnimatedNpc(""));
       dispatch(setPlayerTile({ tileX: 18, tileY: 80 }));
       dispatch(setPlayerDirection(0));
+      dispatch(setBattle(false));
+      dispatch(setState("intro"));
       dispatch(setGameOver(false));
     }
   }, [
@@ -112,6 +122,8 @@ export default function useTileManager() {
     talkingNpc,
     isPaused,
     animatedNpc,
+    gameOver,
+    playerIsWalking,
     // ✅ Now stable due to useCallback
   ]);
 }

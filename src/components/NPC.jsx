@@ -43,6 +43,7 @@ export default function NPC({ npc }) {
   const battleNpc = useSelector((state) => state.game.battleNpc);
   const battleVictory = useSelector((state) => state.game.battleVictory);
   const ovTiles = useSelector((state) => state.game.ovmap.ovTiles);
+  const gameOver = useSelector((state) => state.game.gameOver);
 
   const playerX = useSelector((state) => state.game.player.tileX);
   const playerY = useSelector((state) => state.game.player.tileY);
@@ -63,8 +64,8 @@ export default function NPC({ npc }) {
 
   useEffect(() => {
     if ((isTalking && !npcIsWalking) || booleanBox) {
-      const dx = playerX - npc.tileX;
-      const dy = playerY - npc.tileY;
+      const dx = playerX - npcPosition.tileX;
+      const dy = playerY - npcPosition.tileY;
 
       if (Math.abs(dx) > Math.abs(dy)) {
         setNpcDirection(dx > 0 ? 2 : 1);
@@ -74,7 +75,7 @@ export default function NPC({ npc }) {
     } else {
       setNpcDirection(npc.direction);
       if (npc.walks) {
-        setNpcDirection(walkingDirection);
+        setNpcDirection(npcDirection);
       }
     }
   }, [isTalking, playerX, playerY, npcIsWalking]);
@@ -110,6 +111,7 @@ export default function NPC({ npc }) {
 
   useEffect(() => {
     if (
+      !gameOver &&
       animatedNpc === npc.character &&
       !npcIsWalking &&
       npc.trainer &&
@@ -127,12 +129,21 @@ export default function NPC({ npc }) {
       dispatch(setWalkingSteps(0));
       dispatch(setStepCount(0));
     }
-  }, [animatedNpc, npcIsWalking, npc, battle, message, events, dispatch]);
+  }, [
+    animatedNpc,
+    npcIsWalking,
+    npc,
+    battle,
+    message,
+    events,
+    dispatch,
+    gameOver,
+  ]);
 
   useEffect(() => {
     if (nextX === npcPosition.tileX && nextY === npcPosition.tileY) {
       dispatch(setTalkingNpc(npc.character));
-      if (npc.messages && !battle) {
+      if (npc.messages && !battle && message === "") {
         dispatch(setMessages(npc.messages));
         if (npc.items) {
           dispatch(addItem("Pokeball"));
@@ -165,8 +176,8 @@ export default function NPC({ npc }) {
       !npcIsWalking &&
       npc.range
     ) {
-      const dx = playerX - npc.tileX;
-      const dy = playerY - npc.tileY;
+      const dx = playerX - npcPosition.tileX;
+      const dy = playerY - npcPosition.tileY;
 
       if (Math.abs(dx) <= npc.range && dy === 0) {
         dispatch(setRunable(false));
@@ -197,6 +208,7 @@ export default function NPC({ npc }) {
     events,
     animatedNpc,
     npcIsWalking,
+    npcPosition,
   ]);
 
   useGetTile(npc, npcPosition);

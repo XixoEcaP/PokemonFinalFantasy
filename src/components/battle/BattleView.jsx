@@ -72,9 +72,10 @@ const BattleView = () => {
     }
 
     if (myTeamDefeated && message === "") {
+      dispatch(setGameOver(true));
+
       dispatch(setMessages(["You Lost", "Gameover"]));
       dispatch(setBattle(false));
-      dispatch(setGameOver(true));
       dispatch(setState("intro"));
       dispatch(setFoeTeam([]));
       dispatch(setRunable(true));

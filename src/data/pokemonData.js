@@ -81,7 +81,7 @@ const pokemons = {
   },
   Indra: {
     specie: "Indra",
-    type: ["Thunder", "Psychic"],
+    type: ["Electric", "Psychic"],
     hp: 58,
     attack: 60,
     defense: 63,
@@ -102,7 +102,7 @@ const pokemons = {
   },
   Ramuh: {
     specie: "Ramuh",
-    type: ["Thunder", "Psychic"],
+    type: ["Electric", "Psychic"],
     hp: 80,
     attack: 75,
     defense: 75,
@@ -205,7 +205,7 @@ const pokemons = {
   },
   Coeurl: {
     specie: "Coeurl",
-    type: ["Thunder"],
+    type: ["Electric"],
     hp: 35,
     attack: 52,
     defense: 48,
@@ -221,7 +221,7 @@ const pokemons = {
   },
   Coeurlregina: {
     specie: "Coeurlregina",
-    type: ["Thunder"],
+    type: ["Electric"],
     hp: 65,
     attack: 70,
     defense: 65,

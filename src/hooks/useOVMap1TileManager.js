@@ -4,23 +4,7 @@ import { OverworldMap1Tiles2 } from "../data/mapChunks";
 import { Auron, Auron2, Auron3 } from "../data/characters";
 import useCreatePokemon from "./useCreatePokemon";
 import { setPokemonTeam } from "../store/gameSlice";
-import {
-  setmap,
-  setCurrentTileSet,
-  setOvmap,
-  setPlayerTile,
-  setPlayerDirection,
-  setMessages,
-  setOvmapTiles,
-  setGameOver,
-  setBattle,
-  setTalkingNpc,
-  setNpcIsWalking,
-  setWalkingSteps,
-  setWalkingDirection,
-  setStepCount,
-  setEvent,
-} from "../store/gameSlice";
+import { setmap } from "../store/gameSlice";
 import { setFoeTeam } from "../store/battleSlice";
 import useGetFoePokemon from "../hooks/useGetFoePokemon";
 import pokemons from "../data/pokemonData";

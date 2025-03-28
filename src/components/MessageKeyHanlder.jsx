@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   nextMessage,
   setBattle,
+  setKeyHandler,
   setMessages,
   setNext,
   setTalkingNpc,
@@ -31,6 +32,7 @@ export default function useMessageKeyHandler() {
       if (message === "") {
         dispatch(setNext({ nextX: 0, nextY: 0 }));
         dispatch(setTalkingNpc(""));
+        dispatch(setKeyHandler("WorldKeyboardHandler"));
       }
       if (walkingSteps > stepCount) {
         return;
